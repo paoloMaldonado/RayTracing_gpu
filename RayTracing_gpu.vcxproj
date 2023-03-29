@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{60f539d4-0379-475e-a34f-1d620751ab1e}</ProjectGuid>
+    <RootNamespace>RayTracinggpu</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.0.props" />
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)common\glad\include;$(SolutionDir)common\glad\src;$(SolutionDir)common\GLFW\include;$(SolutionDir)common\imgui;$(SolutionDir)common\shader\include;$(SolutionDir)common\shader\src;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)common\GLFW\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <CudaCompile>
+      <CodeGeneration>compute_75,sm_75</CodeGeneration>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <CompileOut>$(SolutionDir)bin\$(Platform)\$(Configuration)\CUDA\%(Filename)%(Extension).obj</CompileOut>
+    </CudaCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Common\glad\src\glad.c" />
+    <ClCompile Include="Common\imgui\imgui.cpp" />
+    <ClCompile Include="Common\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Common\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Common\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Common\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Common\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Common\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Common\shader\src\shader.cpp" />
+    <ClCompile Include="src\GLutils\GLBufferObject.cpp" />
+    <ClCompile Include="src\GLutils\GLTexture.cpp" />
+    <ClCompile Include="src\GLutils\GLVertexArrayObject.cpp" />
+    <ClCompile Include="src\input\KeyInput.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\render\Canvas.cpp" />
+    <ClCompile Include="src\render\WindowHandler.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common\GLFW\lib\glfw3.pdb" />
+    <None Include="README.md" />
+    <None Include="shaders\fragment_shader.frag" />
+    <None Include="shaders\vertex_shader.vert" />
+    <None Include="src\imgui.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\glad\include\glad\glad.h" />
+    <ClInclude Include="Common\glad\include\KHR\khrplatform.h" />
+    <ClInclude Include="Common\GLFW\include\GLFW\glfw3.h" />
+    <ClInclude Include="Common\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="Common\imgui\imconfig.h" />
+    <ClInclude Include="Common\imgui\imgui.h" />
+    <ClInclude Include="Common\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="Common\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Common\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Common\imgui\imgui_internal.h" />
+    <ClInclude Include="Common\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Common\imgui\imstb_textedit.h" />
+    <ClInclude Include="Common\imgui\imstb_truetype.h" />
+    <ClInclude Include="Common\shader\include\shader.h" />
+    <CudaCompile Include="src\cudaRaytracing.cuh" />
+    <ClInclude Include="src\GLutils\GLBufferObject.h" />
+    <ClInclude Include="src\GLutils\GLTexture.h" />
+    <ClInclude Include="src\GLutils\GLVertexArrayObject.h" />
+    <ClInclude Include="src\input\KeyInput.h" />
+    <CudaCompile Include="src\kernels\compute_ray_kernel.cuh" />
+    <CudaCompile Include="src\kernels\intersection_kernel.cuh" />
+    <CudaCompile Include="src\kernels\shade_kernel.cuh" />
+    <CudaCompile Include="src\materials\material.cuh" />
+    <CudaCompile Include="src\misc\camera.cuh" />
+    <CudaCompile Include="src\misc\ray.cuh" />
+    <CudaCompile Include="src\misc\vec3.cuh" />
+    <ClInclude Include="src\render\Canvas.h" />
+    <ClInclude Include="src\render\GraphicsResourceFromGL.h" />
+    <ClInclude Include="src\render\WindowHandler.h" />
+    <ClInclude Include="src\Scene.h" />
+    <CudaCompile Include="src\shapes\sphere.cuh" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Common\GLFW\lib\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="src\cudaRaytracing.cu" />
+    <CudaCompile Include="src\shapes\sphere.cu" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.0.targets" />
+  </ImportGroup>
+</Project>
