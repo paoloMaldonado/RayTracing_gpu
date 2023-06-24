@@ -8,8 +8,6 @@
 #include "kernels/shade_kernel.cuh"
 
 void callRayTracingKernel(
-    dim3 grid,
-    dim3 thread_block,
     float4* d_pixel,
     Sphere* object_list,
     unsigned int N,

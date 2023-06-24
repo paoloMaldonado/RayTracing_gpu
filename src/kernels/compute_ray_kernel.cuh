@@ -18,9 +18,6 @@ inline Ray compute_ray(const int& i, const int& j, Camera cam, const float& r, c
 	//float u_prime = (r - l) / WIDTH * (i - WIDTH / 2.0f + 0.5f);
 	//float v_prime = (t - b) / HEIGHT * (j - HEIGHT / 2.0f + 0.5f);
 
-	// compute view-space basis
-	cam.compute_view_basis();
-
 	Ray ray;
 	ray.origin = cam.e;
 	ray.direction = normalize(-cam.d * cam.w + u_prime * cam.u + v_prime * cam.v);

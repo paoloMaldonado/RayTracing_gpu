@@ -72,6 +72,12 @@
     <ClCompile Include="src\render\WindowHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\input\MouseInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imguiWidgets\imguiCustomWidgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\vertex_shader.vert">
@@ -151,6 +157,16 @@
     <ClInclude Include="src\render\WindowHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\input\MouseInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imguiWidgets\ImguiCustomWidgets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materials\matte.cuh" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\GLFW\lib\glfw3.lib" />
@@ -167,5 +183,6 @@
     <CudaCompile Include="src\misc\vec3.cuh" />
     <CudaCompile Include="src\shapes\sphere.cuh" />
     <CudaCompile Include="src\cudaRaytracing.cuh" />
+    <CudaCompile Include="src\core\surfaceInteraction.cuh" />
   </ItemGroup>
 </Project>

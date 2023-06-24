@@ -3,19 +3,15 @@
 
 #include "misc/ray.cuh"
 #include "shapes/sphere.cuh"
+#include "core/surfaceInteraction.cuh"
 
-struct hit_record
-{
-	float t;
-	Sphere hitobject;
-};
 
 __device__
-inline bool intersection(const Ray& ray, const Sphere* object_list, const unsigned int N, hit_record& rec)
+inline bool intersection(const Ray& ray, const Sphere* object_list, const unsigned int N, SurfaceInteraction& rec)
 {
 	bool hit = false;
 	float t_0;
-	hit_record temp_rec;
+	SurfaceInteraction temp_rec;
 	temp_rec.t = INFINITY;
 
 	for (unsigned int i = 0; i < N; i++)

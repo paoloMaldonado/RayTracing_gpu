@@ -5,6 +5,8 @@
 #include <GLES2/gl2.h>
 #endif
 
+#include "imguiWidgets/ImguiCustomWidgets.h"
+
 #include <iostream>
 #include <map>
 #include <vector>
@@ -15,6 +17,7 @@
 #include "Scene.h"
 #include "render/GraphicsResourceFromGL.h"
 #include "input/KeyInput.h"
+#include "input/MouseInput.h"
 
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
@@ -33,6 +36,10 @@ int main()
     const int SCR_WIDTH = 1024;
     const int SCR_HEIGHT = static_cast<int>(SCR_WIDTH / aspect_ratio);
 
+    // set 1.0f to be in front of the shapes (smaller projection), values > 1.0f set the view plane behind the shapes (bigger projection)
+    // this phenomenom is due to the center of projection being located at the camera origin (and also because perspective projection works like that)
+    Camera camera(vec3(0.0f, 0.0f, 1.0f), 1.0f); 
+
     WindowHandler window_handler(SCR_WIDTH, SCR_HEIGHT, "Cuda_OpenGL interop");
     window_handler.mark_as_current_context();
 
@@ -46,6 +53,9 @@ int main()
     KeyInput keyInput(keys, mods);
     KeyInput::setKeyboardInput(window_handler.window);
 
+    MouseInput mouseInput(0.005f, SCR_WIDTH, SCR_HEIGHT, camera.pitch, camera.yaw);
+    MouseInput::setMouseInput(window_handler.window);
+
     /////////////////////////////////////////////////////////////////////////////////////////
 
     // Setup Dear ImGui context
@@ -53,7 +63,6 @@ int main()
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -73,6 +82,7 @@ int main()
         return -1;
     }
 
+    //glEnable(GL_FRAMEBUFFER_SRGB);
     Canvas canvas(SCR_WIDTH, SCR_HEIGHT);
 
     // interop between buffer unpack and CUDA
@@ -80,7 +90,6 @@ int main()
     cudaGraphicsGLRegisterBuffer(&tex_data_resource, canvas.getPixelDataID(), cudaGraphicsMapFlagsWriteDiscard);
 
     // Graphics settings
-    Camera camera(vec3(0.0f, 0.0f, 1.0f), 35.5f);
 
     vec3 light(8.5f, 5.5f, 10.0f);
 
@@ -112,6 +121,9 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        // compute view-space basis on CPU
+        camera.compute_view_basis();
+
         // CUDA
         float4* dptr = nullptr;
         size_t num_bytes;
@@ -121,9 +133,7 @@ int main()
         //float4* dptr = graphicsResource.mapAndReturnDevicePointer();
 
         // launch kernel
-        dim3 thread_block(8, 8, 1);
-        dim3 grid(SCR_WIDTH / thread_block.x, SCR_HEIGHT / thread_block.y, 1);
-        callRayTracingKernel(grid, thread_block, dptr, scene.d_objects, scene.primitive_count, camera, light, SCR_WIDTH, SCR_HEIGHT);
+        callRayTracingKernel(dptr, scene.d_objects, scene.primitive_count, camera, light, SCR_WIDTH, SCR_HEIGHT);
 
         cudaGraphicsUnmapResources(1, &tex_data_resource, 0);
         //graphicsResource.unmap();
@@ -132,19 +142,19 @@ int main()
         glfwPollEvents();
         processKeyInputsForCamera(keys, keyInput, camera);
         bool showWindow = keyInput.isModPressed(GLFW_KEY_X, GLFW_MOD_ALT);
+        mouseInput.pointerMode(window_handler.window, showWindow);
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        ImGui::ShowPerfomanceMetrics();
+
         if(showWindow)
         {
-            ImGui::Begin("Perfomance parameters");
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-
             ImGui::Begin("Camera");
+            ImGui::DragFloat3("Front", camera.front.value_ptr(), 0.1f, -10.0f, 10.0f);
             ImGui::DragFloat3("Position", camera.e.value_ptr(), 0.1f, -10.0f, 10.0f);
             ImGui::DragFloat("Yaw angle", &camera.yaw, 0.1f, -90.0f, 90.0f);
             ImGui::DragFloat("Pitch angle", &camera.pitch, 0.1f, -90.0f, 90.0f);
@@ -178,16 +188,16 @@ void processKeyInputsForCamera(const std::vector<int>& keys, KeyInput& keyInput,
         switch (key)
         {
         case GLFW_KEY_RIGHT:
-            if (keyInput.isKeyDown(key)) camera.translate(vec3(1.0f * speed * deltaTime, 0.0f, 0.0f));
+            if (keyInput.isKeyDown(key)) camera.translate(cross(camera.front, camera.up) * speed * deltaTime);
             break;
         case GLFW_KEY_LEFT:
-            if (keyInput.isKeyDown(key)) camera.translate(-vec3(1.0f * speed * deltaTime, 0.0f, 0.0f));
+            if (keyInput.isKeyDown(key)) camera.translate(-cross(camera.front, camera.up) * speed * deltaTime);
             break;
         case GLFW_KEY_UP:
-            if (keyInput.isKeyDown(key)) camera.translate(-vec3(0.0f, 0.0f, 1.0f * speed * deltaTime));
+            if (keyInput.isKeyDown(key)) camera.translate(camera.front * speed * deltaTime);
             break;
         case GLFW_KEY_DOWN:
-            if (keyInput.isKeyDown(key)) camera.translate(vec3(0.0f, 0.0f, 1.0f * speed * deltaTime));
+            if (keyInput.isKeyDown(key)) camera.translate(-camera.front * speed * deltaTime);
             break;
         default:
             break;

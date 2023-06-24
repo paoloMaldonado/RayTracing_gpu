@@ -159,6 +159,8 @@
     <ClCompile Include="Common\imgui\imgui_tables.cpp" />
     <ClCompile Include="Common\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Common\shader\src\shader.cpp" />
+    <ClCompile Include="src\imguiWidgets\imguiCustomWidgets.cpp" />
+    <ClCompile Include="src\input\MouseInput.cpp" />
     <ClCompile Include="src\GLutils\GLBufferObject.cpp" />
     <ClCompile Include="src\GLutils\GLTexture.cpp" />
     <ClCompile Include="src\GLutils\GLVertexArrayObject.cpp" />
@@ -190,7 +192,12 @@
     <ClInclude Include="Common\imgui\imstb_textedit.h" />
     <ClInclude Include="Common\imgui\imstb_truetype.h" />
     <ClInclude Include="Common\shader\include\shader.h" />
+    <CudaCompile Include="src\core\surfaceInteraction.cuh" />
+    <ClInclude Include="src\imguiWidgets\ImguiCustomWidgets.h" />
+    <ClInclude Include="src\materials\matte.cuh" />
+    <ClInclude Include="src\misc\Utils.h" />
     <CudaCompile Include="src\cudaRaytracing.cuh" />
+    <ClInclude Include="src\input\MouseInput.h" />
     <ClInclude Include="src\GLutils\GLBufferObject.h" />
     <ClInclude Include="src\GLutils\GLTexture.h" />
     <ClInclude Include="src\GLutils\GLVertexArrayObject.h" />

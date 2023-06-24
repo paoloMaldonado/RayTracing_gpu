@@ -3,7 +3,6 @@
 KeyInput* KeyInput::instance = nullptr;
 
 
-
 KeyInput::KeyInput(const std::vector<int>& keysToMonitor, const std::vector<int>& modsToMonitor)
 {
 	for (const auto& key : keysToMonitor)

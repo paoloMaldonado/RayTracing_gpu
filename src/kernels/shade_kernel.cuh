@@ -2,28 +2,30 @@
 #define __SHADE_KERNEL_CUH__
 
 #include "shapes/sphere.cuh"
+#include "core/surfaceInteraction.cuh"
 
 __device__
-inline vec3 shade(const vec3& ipoint, const Sphere& iobject, const vec3& view_dir, const vec3& light_source_pos)
+inline vec3 shade(const SurfaceInteraction& re, const vec3& p, const vec3& wo, const vec3& wi)
 {
-	vec3 n = iobject.compute_normal_at(ipoint);
-	if (dot(n, view_dir) < 0.0f) n = -n;
-	vec3 l = normalize(light_source_pos - ipoint);
+	const float invPi = 0.31830988618379067154;
+
+	vec3 n = re.hitobject.compute_normal_at(p);
+	if (dot(n, wo) < 0.0f) n = -n;
 	vec3 I = vec3(1.0f, 1.0f, 1.0f);
 
-	vec3 k_d = iobject.color();
+	vec3 k_d = re.hitobject.color();
 
-	vec3 I_a = vec3(0.1f, 0.1f, 0.1f);
+	vec3 I_a = vec3(0.01f, 0.01f, 0.01f);
 	vec3 k_a = k_d;
 
-	vec3 h = normalize(view_dir + l);
-	vec3 r = (2.0f * dot(n, l) * n) - l;
-	vec3 k_s = iobject.specular_color();
-	float shininess = iobject.shininess();
+	vec3 h = normalize(wo + wi);
+	//vec3 r = (2.0f * dot(n, wi) * n) - wi;
+	vec3 k_s = re.hitobject.specular_color();
+	float shininess = re.hitobject.shininess();
 
-	vec3 L = k_a * I_a +
-			 k_d * I * fmaxf(0.0f, dot(n, l)) +
-			 k_s * I * powf(fmaxf(0.0f, dot(n, h)), shininess);
+	vec3 L = //k_a * I_a +
+		(k_d * invPi) * I * fmaxf(0.0f, dot(n, wi));
+		//k_s * I * powf(fmaxf(0.0f, dot(n, h)), shininess);
 	return L;
 }
 
