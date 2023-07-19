@@ -14,7 +14,7 @@ public:
 	Ray(const vec3& origin, const vec3& direction) : origin(origin), direction(direction)
 	{}
 	__device__
-	inline vec3 point_at_parameter(const float& t) { return origin + t*direction; }
+	inline vec3 point_at_parameter(const float& t) const { return origin + t*direction; }
 };
 
 #endif

@@ -1,7 +1,9 @@
 #include "cudaRaytracing.cuh"
+#include "core/visibilityTester.cuh"
+#include "lights/pointLight.cuh"
 
 __global__
-void render(float4* pixel, Sphere* object_list, unsigned int N, Camera camera, vec3 point_light, const int width, const int height)
+void render(float4* pixel, Shape** object_list, unsigned int N, Camera camera, vec3 point_light, const int width, const int height)
 {
     // map from threadIdx/BlockIdx to pixel position
     int x = threadIdx.x + blockIdx.x * blockDim.x;
@@ -21,20 +23,35 @@ void render(float4* pixel, Sphere* object_list, unsigned int N, Camera camera, v
     //pixel[offset] = make_float4(0.54f, 0.54f, 0.54f, 1.0f);
     pixel[offset] = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 
-    if (hit) // there is an intersection
+    if (hit) // if there is an intersection
     {
-        vec3 p = ray.point_at_parameter(rec.t);
-        vec3 wi = normalize(point_light - p);
-        vec3 wo = -ray.direction;
-        vec3 color = shade(rec, p, wo, wi);
+        vec3 wi;
+        bool in_shadow;
+        VisibilityTester visibility(object_list, N);
+
+        PointLight light(point_light);
+        vec3 I = light.sample_li(rec, ray, visibility, wi, in_shadow);
+
+        //vec3 I = point_light.sample_li(ray, rec, )
+        //vec3 p = ray.point_at_parameter(rec.t);
+        //vec3 wi = normalize(point_light - p);
+        
+        //bool visibility = 0;
+        //Ray shadow_ray(p + wi*0.0001f, wi);
+        
+        //visibility = intersectionShadow(shadow_ray, object_list, N);
+
+        // preallocate a buffer for placement new -> faster than dynamic allocation 
+        MemoryManager memory;
+        vec3 color = shade(rec, wi, memory, in_shadow);
+
         pixel[offset] = make_float4(color.x, color.y, color.z, 1.0f);
     }    
-
 }
 
 void callRayTracingKernel(
     float4* d_pixel,
-    Sphere* object_list,
+    Shape** object_list,
     unsigned int N,
     Camera camera,
     vec3 point_light,
@@ -44,4 +61,5 @@ void callRayTracingKernel(
     dim3 thread_block(8, 8, 1);
     dim3 grid(width / thread_block.x, height / thread_block.y, 1);
     render<<< grid, thread_block >>>(d_pixel, object_list, N, camera, point_light, width, height);
+    cudaDeviceSynchronize();
 }

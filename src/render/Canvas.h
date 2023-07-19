@@ -1,7 +1,6 @@
 #pragma once
 #include <glad/glad.h>
 #include <shader.h>
-#include "GLutils/GLBufferObject.h"
 #include "GLutils/GLTexture.h"
 #include "GLutils/GLVertexArrayObject.h"
 

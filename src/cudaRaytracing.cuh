@@ -9,7 +9,7 @@
 
 void callRayTracingKernel(
     float4* d_pixel,
-    Sphere* object_list,
+    Shape** object_list,
     unsigned int N,
     Camera camera,
     vec3 point_light,

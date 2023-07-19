@@ -14,7 +14,7 @@
 #include <glad/glad.h>
 #include "render/WindowHandler.h"
 #include "render/Canvas.h"
-#include "Scene.h"
+#include "core/scene.cuh"
 #include "render/GraphicsResourceFromGL.h"
 #include "input/KeyInput.h"
 #include "input/MouseInput.h"
@@ -94,23 +94,26 @@ int main()
     vec3 light(8.5f, 5.5f, 10.0f);
 
     //Colors
-    vec3 RED = vec3(1.0f, 0.0f, 0.0f);
-    vec3 GREEN = vec3(0.0f, 1.0f, 0.0f);
-    vec3 BLUE = vec3(0.0f, 0.0f, 1.0f);
-    vec3 BLACK = vec3(0.0f, 0.0f, 0.0f);
+    //vec3 RED = vec3(1.0f, 0.0f, 0.0f);
+    //vec3 GREEN = vec3(0.0f, 1.0f, 0.0f);
+    //vec3 BLUE = vec3(0.0f, 0.0f, 1.0f);
+    //vec3 BLACK = vec3(0.0f, 0.0f, 0.0f);
 
-    Material mat1(RED, vec3(0.5f, 0.5, 0.5f), 200.0f);
-    Material mat2(GREEN, vec3(0.5f, 0.5, 0.5f), 200.0f);
-    Material mat3(BLACK, vec3(0.5f, 0.5, 0.5f), 200.0f);
+    //Material mat1(RED, vec3(0.5f, 0.5, 0.5f), 200.0f);
+    //Material mat2(GREEN, vec3(0.5f, 0.5, 0.5f), 200.0f);
+    //Material mat3(BLACK, vec3(0.5f, 0.5, 0.5f), 200.0f);
 
-    Sphere object_1(vec3(0.0f, 0.0f, -1.0f), 0.5f, mat1);
-    Sphere object_2(vec3(-1.0f, 0.0f, -1.0f), 0.5f, mat2);
-    Sphere object_3(vec3(1.0f, 0.0f, -1.0f), 0.5f, mat3);
-    Sphere object_4(vec3(0.0f, -100.5f, -1.0f), 100.0f, mat2);
+    //Sphere object_1(vec3(0.0f, 0.0f, -1.0f), 0.5f, mat1);
+    //Sphere object_2(vec3(-1.0f, 0.0f, -1.0f), 0.5f, mat2);
+    //Sphere object_3(vec3(1.0f, 0.0f, -1.0f), 0.5f, mat3);
+    //Sphere object_4(vec3(0.0f, -100.5f, -1.0f), 100.0f, mat2);
 
-    std::vector<Sphere> spheres = {object_1, object_2, object_3, object_4};
+    //std::vector<Sphere> spheres = {object_1, object_2, object_3, object_4};
 
-    Scene scene(spheres);
+    Shape** spheres = nullptr;
+    Material** materials = nullptr;
+
+    Scene scene(spheres, 4, materials, 3); //instantiate 4 spheres on GPU
     scene.build();
 
     // render loop

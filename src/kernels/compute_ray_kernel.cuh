@@ -1,9 +1,8 @@
 #if !defined(__COMPUTE_RAY_KERNEL_CUH__)
 #define __COMPUTE_RAY_KERNEL_CUH__
 
-#include "misc/vec3.cuh"
-#include "misc/camera.cuh"
-#include "misc/ray.cuh"
+#include "core/camera.cuh"
+#include "core/ray.cuh"
 
 __device__
 inline Ray compute_ray(const int& i, const int& j, Camera cam, const float& r, const float& t, const int WIDTH, const int HEIGHT)

@@ -1,188 +1,267 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="core">
+      <UniqueIdentifier>{aa116bdd-7b53-4be2-9b00-649dfb3369cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="shaders">
+      <UniqueIdentifier>{305231d5-103c-4e73-b170-67ca671dcf52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{28a80ee6-4c1c-49e7-bfe7-69c196adf659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{64377676-dfff-4cd6-9bcc-d6ac19a01ced}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels">
+      <UniqueIdentifier>{5c5a76f5-e19b-408a-b991-4d146abb4812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="materials">
+      <UniqueIdentifier>{460dc716-0866-4202-8bb1-6c09a99fa0ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{bad9b160-c08d-4b99-a395-09a45f9a2a54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{c684de81-19f8-436c-86ea-f9d5a4bdc282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shapes">
+      <UniqueIdentifier>{674aaf7c-f644-4d27-adc9-f3115734b55c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gl">
+      <UniqueIdentifier>{bde56fe0-eb3f-4344-a25e-526f4972fb39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imguiWidgets">
+      <UniqueIdentifier>{beeade05-3fe4-4c7e-937e-6ab34c112228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{305231d5-103c-4e73-b170-67ca671dcf52}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Imgui">
-      <UniqueIdentifier>{28a80ee6-4c1c-49e7-bfe7-69c196adf659}</UniqueIdentifier>
+    <Filter Include="main">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\imgui\imgui.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Common\imgui\imgui_demo.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Common\imgui\imgui_draw.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Common\imgui\imgui_impl_glfw.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Common\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Common\imgui\imgui_tables.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Common\imgui\imgui_widgets.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\shader\src\shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\glad\src\glad.c">
-      <Filter>Source Files</Filter>
+      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="src\GLutils\GLBufferObject.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>gl</Filter>
     </ClCompile>
     <ClCompile Include="src\GLutils\GLTexture.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>gl</Filter>
     </ClCompile>
     <ClCompile Include="src\GLutils\GLVertexArrayObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\input\KeyInput.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\Canvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\WindowHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\input\MouseInput.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>gl</Filter>
     </ClCompile>
     <ClCompile Include="src\imguiWidgets\imguiCustomWidgets.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>imguiWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\KeyInput.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\MouseInput.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\Canvas.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\WindowHandler.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\shader\src\shader.cpp">
+      <Filter>shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\glad\src\glad.c">
+      <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\vertex_shader.vert">
-      <Filter>Shaders</Filter>
+      <Filter>shaders</Filter>
     </None>
     <None Include="shaders\fragment_shader.frag">
-      <Filter>Shaders</Filter>
+      <Filter>shaders</Filter>
     </None>
-    <None Include="Common\GLFW\lib\glfw3.pdb" />
     <None Include="README.md" />
-    <None Include="src\imgui.ini" />
+    <None Include="src\imgui.ini">
+      <Filter>imgui</Filter>
+    </None>
+    <None Include="Common\GLFW\lib\glfw3.pdb">
+      <Filter>common</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\imgui\imconfig.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imgui.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imgui_impl_opengl3.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imgui_impl_glfw.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imgui_impl_opengl3_loader.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imgui_internal.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imstb_rectpack.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imstb_textedit.h">
-      <Filter>Imgui</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\imgui\imstb_truetype.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\shader\include\shader.h">
-      <Filter>Header Files</Filter>
+      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Common\GLFW\include\GLFW\glfw3.h">
-      <Filter>Header Files</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="Common\GLFW\include\GLFW\glfw3native.h">
-      <Filter>Header Files</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="Common\glad\include\KHR\khrplatform.h">
-      <Filter>Header Files</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="Common\glad\include\glad\glad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene.h">
-      <Filter>Header Files</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\GLutils\GLBufferObject.h">
-      <Filter>Header Files</Filter>
+      <Filter>gl</Filter>
     </ClInclude>
     <ClInclude Include="src\GLutils\GLTexture.h">
-      <Filter>Header Files</Filter>
+      <Filter>gl</Filter>
     </ClInclude>
     <ClInclude Include="src\GLutils\GLVertexArrayObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\input\KeyInput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\Canvas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\GraphicsResourceFromGL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\WindowHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\input\MouseInput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\misc\Utils.h">
-      <Filter>Header Files</Filter>
+      <Filter>gl</Filter>
     </ClInclude>
     <ClInclude Include="src\imguiWidgets\ImguiCustomWidgets.h">
-      <Filter>Header Files</Filter>
+      <Filter>imguiWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="src\materials\matte.cuh" />
+    <ClInclude Include="src\input\KeyInput.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\MouseInput.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\Canvas.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\GraphicsResourceFromGL.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\WindowHandler.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utility\Utils.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\shader\include\shader.h">
+      <Filter>shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lights\pointLight.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="Common\GLFW\lib\glfw3.lib" />
+    <CudaCompile Include="src\core\camera.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\material.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\ray.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\reflection.cu">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\reflection.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\scene.cu">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\scene.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\shape.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\surfaceInteraction.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\vec3.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\kernels\compute_ray_kernel.cuh">
+      <Filter>kernels</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\kernels\intersection_kernel.cuh">
+      <Filter>kernels</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\kernels\shade_kernel.cuh">
+      <Filter>kernels</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\materials\matte.cu">
+      <Filter>materials</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\materials\matte.cuh">
+      <Filter>materials</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\shapes\sphere.cu">
+      <Filter>shapes</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\shapes\sphere.cuh">
+      <Filter>shapes</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\utility\utils.cuh">
+      <Filter>utility</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\cudaRaytracing.cu">
+      <Filter>main</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\cudaRaytracing.cuh">
+      <Filter>main</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\shape.cu" />
+    <CudaCompile Include="src\memory\memory.cuh" />
+    <CudaCompile Include="src\core\dependencies.cuh" />
+    <CudaCompile Include="src\core\surfaceInteraction.cu" />
+    <CudaCompile Include="src\materials\plastic.cuh" />
+    <CudaCompile Include="src\materials\plastic.cu" />
+    <CudaCompile Include="src\core\visibilityTester.cuh" />
+    <CudaCompile Include="src\core\visibilityTester.cu" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="src\cudaRaytracing.cu" />
-    <CudaCompile Include="src\shapes\sphere.cu" />
-    <CudaCompile Include="src\kernels\compute_ray_kernel.cuh" />
-    <CudaCompile Include="src\kernels\intersection_kernel.cuh" />
-    <CudaCompile Include="src\kernels\shade_kernel.cuh" />
-    <CudaCompile Include="src\materials\material.cuh" />
-    <CudaCompile Include="src\misc\camera.cuh" />
-    <CudaCompile Include="src\misc\ray.cuh" />
-    <CudaCompile Include="src\misc\vec3.cuh" />
-    <CudaCompile Include="src\shapes\sphere.cuh" />
-    <CudaCompile Include="src\cudaRaytracing.cuh" />
-    <CudaCompile Include="src\core\surfaceInteraction.cuh" />
+    <Library Include="Common\GLFW\lib\glfw3.lib">
+      <Filter>common</Filter>
+    </Library>
   </ItemGroup>
 </Project>

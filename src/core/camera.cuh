@@ -2,7 +2,7 @@
 #define __CAMERA_CUH__
 
 #include "vec3.cuh"
-#include "misc/Utils.h"
+#include "utility/Utils.h"
 #include <math_constants.h>
 
 class Camera

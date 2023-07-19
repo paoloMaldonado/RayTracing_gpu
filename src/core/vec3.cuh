@@ -15,6 +15,9 @@ public:
 	__host__ __device__ 
 	vec3(const float& x, const float& y, const float& z) : x(x), y(y), z(z)
 	{}
+	__host__ __device__
+	vec3(const float& v) : x(v), y(v), z(v)
+	{}
 	__host__ __device__ 
 	inline vec3 operator+(const vec3& b) const { return vec3(x + b.x, y + b.y, z + b.z); }
 	__host__ __device__
