@@ -38,6 +38,8 @@ public:
 	inline float lenght() const { return sqrtf(x*x + y*y + z*z); }
 	__host__ __device__
 	inline float* value_ptr() { return &(x); }
+	__host__ __device__
+	inline bool isBlack() { return (x == 0.0f && y == 0.0f && z == 0.0f) ? true : false; }
 };
 
 __host__ __device__

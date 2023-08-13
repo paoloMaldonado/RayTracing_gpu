@@ -7,20 +7,63 @@
 
 __device__
 inline vec3 reflect(const vec3& n, const vec3& wi) { return normalize((2.0f * n * (dot(n, wi))) - wi); }
+__device__
+vec3 refract(const vec3& n, const vec3& wi, const float& etaRatio);
+__device__
+float reflectanceFresnel(float cosThetaI, float etaI, float etaT);
+
+enum class BxDFType
+{
+	SPECULAR_REFLECTION = 0,
+	SPECULAR_REFRACTION = 1,
+	REFLECTION          = 2,
+	DIFFUSE             = 3
+};
 
 class BxDF
 {
 public:
-	vec3 n;
+	BxDFType type;
+	BxDF() = default;
 	__device__
-	BxDF() { n.x = n.y = n.z = 0.0f; };
-	__device__
-	BxDF(const vec3& n): n(n)
+	BxDF(const BxDFType& type): type(type)
 	{}
 	__device__
 	virtual ~BxDF() {}
 	__device__
 	virtual vec3 f(const vec3& wi, const vec3& wo) const = 0;
+	__device__
+	virtual vec3 sample_f(const vec3& wo, vec3& wi) const = 0;
+};
+
+class Fresnel
+{
+public:
+	__device__
+	virtual ~Fresnel() {}
+	__device__
+	virtual	float evaluate(float cosThetaI) const = 0;
+};
+
+class FresnelDielectric : public Fresnel
+{
+public:
+	float etaI;
+	float etaT;
+
+	__device__
+	FresnelDielectric(float etaI, float etaT) : etaI(etaI), etaT(etaT)
+	{}
+	__device__
+	virtual	float evaluate(float cosThetaI) const;
+
+};
+
+class FresnelNoOp : public Fresnel
+{
+public:
+	__device__
+	virtual	float evaluate(float cosThetaI) const { return 1.0f; }
 };
 
 class LambertianReflection : public BxDF
@@ -30,7 +73,7 @@ public:
 
 	LambertianReflection() = default;
 	__device__
-	LambertianReflection(const vec3& Kd) : Kd(Kd)
+	LambertianReflection(const vec3& Kd) : Kd(Kd), BxDF(BxDFType::DIFFUSE)
 	{}
 	__device__
 	virtual ~LambertianReflection() {}
@@ -39,6 +82,8 @@ public:
 	{
 		return (Kd * invPi());
 	};
+	__device__
+	virtual vec3 sample_f(const vec3& wo, vec3& wi) const override { return vec3(0.0f); };
 };
 
 class PhongReflection : public BxDF
@@ -52,7 +97,7 @@ public:
 	__device__
 	PhongReflection(const vec3& Ks, 
 					const float& phong_exponent, const vec3& n) : 
-		Ks(Ks), pn(phong_exponent), n(n)
+		Ks(Ks), pn(phong_exponent), n(n), BxDF(BxDFType::REFLECTION)
 	{}
 	__device__
 	virtual ~PhongReflection() {}
@@ -64,6 +109,8 @@ public:
 		
 		return Ks * norm_factor * powf(cos_alpha, pn);
 	}
+	__device__
+	virtual vec3 sample_f(const vec3& wo, vec3& wi) const override { return vec3(0.0f); };
 };
 
 class BlinnPhongReflection : public BxDF
@@ -77,18 +124,96 @@ public:
 	__device__
 	BlinnPhongReflection(const vec3& Ks,
 						 const float& phong_exponent, const vec3& n) :
-		Ks(Ks), pn(phong_exponent), n(n)
+		Ks(Ks), pn(phong_exponent), n(n), BxDF(BxDFType::REFLECTION)
 	{}
 	__device__
-		virtual ~BlinnPhongReflection() {}
+	virtual ~BlinnPhongReflection() {}
 	__device__
-		virtual vec3 f(const vec3& wi, const vec3& wo) const override
+	virtual vec3 f(const vec3& wi, const vec3& wo) const override
 	{
 		vec3 h = normalize(wi + wo);
 		float cos_alpha = fmaxf(0.0f, dot(n, h));  // =cos(alpha) where alpha is the angle between half vector and normal                         
-		float norm_factor = ((pn + 2.0f) * (pn + 4.0f)) / ((8.0f * pi()) * (powf(2, -pn / 2.0f) + pn));
+		float norm_factor = ((pn + 2.0f) * (pn + 4.0f)) / 
+							((8.0f * pi()) * (powf(2, -pn / 2.0f) + pn));
 
 		return Ks * norm_factor * powf(cos_alpha, pn);
+	}
+	__device__
+	virtual vec3 sample_f(const vec3& wo, vec3& wi) const override { return vec3(0.0f); };
+};
+
+class SpecularReflection : public BxDF
+{
+public:
+	vec3 R;				// scale factor
+	vec3 n;				// normal vector
+	Fresnel* fresnel;   // fresnel reflectance factor
+
+	SpecularReflection() = default;
+	__device__
+	SpecularReflection(const vec3& R, const vec3& n, Fresnel* fresnel) : 
+		R(R), n(n), fresnel(fresnel), BxDF(BxDFType::SPECULAR_REFLECTION)
+	{}
+	__device__
+	virtual ~SpecularReflection() {}
+	__device__
+	virtual vec3 f(const vec3& wi, const vec3& wo) const override
+	{
+		return vec3(0.0f);
+	}
+	__device__
+	virtual vec3 sample_f(const vec3& wo, vec3& wi) const override
+	{
+		// Generate incident ray with perfect specular direction
+		vec3 custom_n = dot(n, wo) < 0.0f ? -n : n;
+		wi = reflect(custom_n, wo); 
+		// Compute the angle between the reflected vector and the normal
+		float cosThetaI = dot(wi, n);
+
+		return fresnel->evaluate(cosThetaI) * R / fabs(cosThetaI);
+	}
+};
+
+class SpecularRefraction : public BxDF
+{
+public:
+	vec3 T;						  // scale factor
+	vec3 n;						  // normal vector
+	float etaA;					 	
+	float etaB;
+	FresnelDielectric fresnel;    // fresnel reflectance factor
+
+	SpecularRefraction() = default;
+	__device__
+	SpecularRefraction(const vec3& T, const vec3& n, float etaA, float etaB) :
+		T(T), n(n), etaA(etaA), etaB(etaB), fresnel(etaA, etaB), BxDF(BxDFType::SPECULAR_REFRACTION)
+	{}
+	__device__
+	virtual ~SpecularRefraction() {}
+	__device__
+	virtual vec3 f(const vec3& wi, const vec3& wo) const override
+	{
+		return vec3(0.0f);
+	}
+	__device__
+	virtual vec3 sample_f(const vec3& wo, vec3& wi) const override
+	{
+		// determine which index is incident and which is refracted
+		float cosThetaO = dot(n, wo);
+		bool entering = cosThetaO > 0.0f;
+		float etaI = entering ? etaA : etaB;
+		float etaT = entering ? etaB : etaA;
+		
+		// Generate refracted ray with specular direction
+		vec3 custom_n = dot(n, wo) < 0.0f ? -n : n;
+		wi = refract(custom_n, wo, etaI / etaT);
+		if (wi.isBlack()) return vec3(0.0f);
+
+		// Compute the angle between refracted direction and the normal
+		float cosThetaI = dot(wi, n);
+
+		vec3 Kt = (1.0f - fresnel.evaluate(cosThetaI)) * T;
+		return Kt / fabs(cosThetaI);
 	}
 };
 
@@ -108,6 +233,10 @@ public:
 	};
 	__device__
 	vec3 f(const vec3& wi, const vec3& wo) const;
+	__device__
+	vec3 sample_f(const vec3& wo, vec3& wi, const BxDFType& type) const;
+	__device__
+	void clear() { this->~BSDF(); }
 };
 
 #endif

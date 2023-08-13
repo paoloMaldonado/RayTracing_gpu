@@ -197,7 +197,8 @@
     <ClInclude Include="Common\imgui\imstb_truetype.h" />
     <ClInclude Include="Common\shader\include\shader.h" />
     <CudaCompile Include="src\core\surfaceInteraction.cu" />
-    <CudaCompile Include="src\core\visibilityTester.cu" />
+    <CudaCompile Include="src\materials\glass.cu" />
+    <CudaCompile Include="src\materials\mirror.cu" />
     <CudaCompile Include="src\materials\plastic.cu" />
     <CudaCompile Include="src\utility\utils.cuh" />
     <CudaCompile Include="src\core\surfaceInteraction.cuh" />
@@ -205,11 +206,14 @@
     <CudaCompile Include="src\core\reflection.cuh" />
     <CudaCompile Include="src\core\dependencies.cuh" />
     <CudaCompile Include="src\core\visibilityTester.cuh" />
+    <CudaCompile Include="src\core\dstructs.cuh" />
     <ClInclude Include="src\imguiWidgets\ImguiCustomWidgets.h" />
     <CudaCompile Include="src\materials\matte.cuh" />
     <CudaCompile Include="src\memory\memory.cuh" />
     <CudaCompile Include="src\materials\plastic.cuh" />
     <ClInclude Include="src\lights\pointLight.cuh" />
+    <CudaCompile Include="src\materials\glass.cuh" />
+    <ClInclude Include="src\materials\mirror.cuh" />
     <ClInclude Include="src\utility\Utils.h" />
     <CudaCompile Include="src\cudaRaytracing.cuh" />
     <ClInclude Include="src\input\MouseInput.h" />

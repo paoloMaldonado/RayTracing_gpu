@@ -188,6 +188,7 @@
       <Filter>shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\lights\pointLight.cuh" />
+    <ClInclude Include="src\materials\mirror.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\core\camera.cuh">
@@ -257,7 +258,10 @@
     <CudaCompile Include="src\materials\plastic.cuh" />
     <CudaCompile Include="src\materials\plastic.cu" />
     <CudaCompile Include="src\core\visibilityTester.cuh" />
-    <CudaCompile Include="src\core\visibilityTester.cu" />
+    <CudaCompile Include="src\materials\mirror.cu" />
+    <CudaCompile Include="src\core\dstructs.cuh" />
+    <CudaCompile Include="src\materials\glass.cu" />
+    <CudaCompile Include="src\materials\glass.cuh" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\GLFW\lib\glfw3.lib">

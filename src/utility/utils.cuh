@@ -10,4 +10,16 @@ inline float twopi() { return 6.28318530717958647692f; }
 __device__
 inline float invPi() { return 0.31830988618379067154f; }
 
+template <class T>
+__device__ void swap(T& a, T& b)
+{
+	T c(a); a = b; b = c;
+}
+
+__device__
+inline bool areEqualf(const float& a, const float& b, const float& epsilon = 0.0001f)
+{
+	return (fabs(a - b) < epsilon) ? true : false;
+}
+
 #endif

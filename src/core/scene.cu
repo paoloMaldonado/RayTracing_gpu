@@ -2,6 +2,8 @@
 #include "shapes/sphere.cuh"
 #include "materials/matte.cuh"
 #include "materials/plastic.cuh"
+#include "materials/mirror.cuh"
+#include "materials/glass.cuh"
 
 __global__
 void create_scene(Shape** objects, const unsigned int N, Material** materials, const unsigned int nMat)
@@ -10,11 +12,13 @@ void create_scene(Shape** objects, const unsigned int N, Material** materials, c
     vec3 RED = vec3(1.0f, 0.0f, 0.0f);
     vec3 GREEN = vec3(0.0f, 1.0f, 0.0f);
     vec3 BLUE = vec3(0.0f, 0.0f, 1.0f);
+    vec3 ORANGE = vec3(1.0f, 0.4f, 0.02f);
     vec3 BLACK = vec3(0.0f, 0.0f, 0.0f);
 
-    *(materials)     = new MatteMaterial(RED);
+    *(materials)     = new MatteMaterial(ORANGE);
     *(materials + 1) = new MatteMaterial(GREEN);
-    *(materials + 2) = new PlasticMaterial(vec3(0.0f), vec3(1.0f), 1000.0f, false);
+    //*(materials + 2) = new PlasticMaterial(vec3(0.0f), vec3(1.0f), 1000.0f, false);
+    *(materials + 2) = new GlassMaterial(vec3(1.0f), vec3(1.0f), 1.5f);
 
     *(objects)     = new Sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, *(materials));
     *(objects + 1) = new Sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, *(materials + 1));

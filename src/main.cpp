@@ -40,7 +40,7 @@ int main()
     // this phenomenom is due to the center of projection being located at the camera origin (and also because perspective projection works like that)
     Camera camera(vec3(0.0f, 0.0f, 1.0f), 1.0f); 
 
-    WindowHandler window_handler(SCR_WIDTH, SCR_HEIGHT, "Cuda_OpenGL interop");
+    WindowHandler window_handler(SCR_WIDTH, SCR_HEIGHT, "raytracing");
     window_handler.mark_as_current_context();
 
     // Set the Keyboard Input, defining keys for moving around the scene as well as "mod" keys for toggle the imgui panel 

@@ -14,9 +14,9 @@ public:
 	PointLight(const vec3& position) : pos(position)
 	{}
 	__device__
-	vec3 sample_li(const SurfaceInteraction& rec, const Ray& ray, const VisibilityTester& visibility, vec3& wi, bool& in_shadow) const
+	vec3 sample_li(const SurfaceInteraction& rec, const VisibilityTester& visibility, vec3& wi, bool& in_shadow) const
 	{
-		vec3 p = ray.point_at_parameter(rec.t);
+		vec3 p = rec.p;
 		wi = normalize(pos - p);
 		Ray shadow_ray = Ray(p + wi*0.0001f, wi);
 		in_shadow = visibility.test_shadow(shadow_ray);

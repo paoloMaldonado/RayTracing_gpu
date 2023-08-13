@@ -11,7 +11,8 @@ public:
 	float t;
 	Shape* hitobject;
 	BSDF bsdf;
-	vec3 wo, n;
+	vec3 wo;
+	vec3 n;
 	vec3 p;
 
 	__device__
