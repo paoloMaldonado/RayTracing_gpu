@@ -7,7 +7,7 @@ template <class T>
 class Stack
 {
 private:
-    T st[7];    // ((2**5)-2)/2 refracted rays at most considering maxDepth of 5 as maximum
+    T st[15];    // ((2**5)-2)/2 refracted rays at most considering maxDepth of 5 as maximum
     int top;
     int N;
 public:

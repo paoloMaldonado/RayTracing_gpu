@@ -1,7 +1,7 @@
 #if !defined(__CAMERA_CUH__)
 #define __CAMERA_CUH__
 
-#include "vec3.cuh"
+#include "geometry.cuh"
 #include "utility/Utils.h"
 #include <math_constants.h>
 
@@ -9,7 +9,7 @@ class Camera
 {
 public:
 	// right handed camera (parameters expressed in world space)
-	vec3 e;			// camera origin / center of projection
+	point3 e;	    // camera origin / center of projection
 	vec3 front;		// camera looking direction
 	vec3 up;		// up vector (0, 1, 0) by deafult
 	vec3 u, v, w;	// view space orthonormal basis 
@@ -20,7 +20,7 @@ public:
 
 	Camera() = default;
 	__host__ 
-	Camera(const vec3& eye, const float& d, const float& yaw = 90.0f, const float& pitch = 0.0f) : e(eye), d(d), yaw(yaw), pitch(pitch)
+	Camera(const point3& eye, const float& d, const float& yaw = 90.0f, const float& pitch = 0.0f) : e(eye), d(d), yaw(yaw), pitch(pitch)
 	{
 		up = vec3(0.0f, 1.0f, 0.0f);
 		u = vec3(1.0f, 0.0f, 0.0f);
@@ -47,7 +47,7 @@ public:
 	__host__
 	inline void compute_view_basis()
 	{
-		vec3 look_at = e + front;
+		point3 look_at = e + front;
 		w = e - look_at;
 		w = normalize(w);
 		u = normalize(cross(up, w));

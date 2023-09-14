@@ -4,6 +4,7 @@
 #include "memory/memory.cuh"
 #include "reflection.cuh"
 #include "shape.cuh"
+#include "shapes/instance.cuh"
 
 class SurfaceInteraction
 {
@@ -12,13 +13,13 @@ public:
 	Shape* hitobject;
 	BSDF bsdf;
 	vec3 wo;
-	vec3 n;
-	vec3 p;
+	normal3 n;
+	point3 p;
 
 	__device__
 	SurfaceInteraction();
 	__device__
-	SurfaceInteraction(const vec3& p, const vec3& wo, const vec3& n);
+	SurfaceInteraction(const point3& p, const vec3& wo, const normal3& n);
 	__device__
 	void compute_scattering_functions(MemoryManager& mem_buffer);
 

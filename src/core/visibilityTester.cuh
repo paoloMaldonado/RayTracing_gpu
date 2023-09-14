@@ -6,12 +6,12 @@
 class VisibilityTester
 {
 public:
-	Shape** escene;
+	Instance** escene;
 	int N;
 
 	VisibilityTester() = default;
 	__device__
-	VisibilityTester(Shape** escene, const int& N) : 
+	VisibilityTester(Instance** escene, const int& N) : 
 		escene(escene), N(N)
 	{}
 	__device__

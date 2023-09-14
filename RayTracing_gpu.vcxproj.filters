@@ -42,6 +42,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="lights">
+      <UniqueIdentifier>{a6be9334-36e6-4469-8e95-d1553321ea8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\imgui\imgui.cpp">
@@ -187,8 +190,12 @@
     <ClInclude Include="Common\shader\include\shader.h">
       <Filter>shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\lights\pointLight.cuh" />
-    <ClInclude Include="src\materials\mirror.cuh" />
+    <ClInclude Include="src\materials\mirror.cuh">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lights\pointLight.cuh">
+      <Filter>lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\core\camera.cuh">
@@ -218,7 +225,7 @@
     <CudaCompile Include="src\core\surfaceInteraction.cuh">
       <Filter>core</Filter>
     </CudaCompile>
-    <CudaCompile Include="src\core\vec3.cuh">
+    <CudaCompile Include="src\core\geometry.cuh">
       <Filter>core</Filter>
     </CudaCompile>
     <CudaCompile Include="src\kernels\compute_ray_kernel.cuh">
@@ -251,17 +258,51 @@
     <CudaCompile Include="src\cudaRaytracing.cuh">
       <Filter>main</Filter>
     </CudaCompile>
-    <CudaCompile Include="src\core\shape.cu" />
-    <CudaCompile Include="src\memory\memory.cuh" />
-    <CudaCompile Include="src\core\dependencies.cuh" />
-    <CudaCompile Include="src\core\surfaceInteraction.cu" />
-    <CudaCompile Include="src\materials\plastic.cuh" />
-    <CudaCompile Include="src\materials\plastic.cu" />
-    <CudaCompile Include="src\core\visibilityTester.cuh" />
-    <CudaCompile Include="src\materials\mirror.cu" />
-    <CudaCompile Include="src\core\dstructs.cuh" />
-    <CudaCompile Include="src\materials\glass.cu" />
-    <CudaCompile Include="src\materials\glass.cuh" />
+    <CudaCompile Include="src\core\transform.cu">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\transform.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\shapes\instance.cuh">
+      <Filter>shapes</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\shapes\instance.cu">
+      <Filter>shapes</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\materials\glass.cu">
+      <Filter>materials</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\materials\glass.cuh">
+      <Filter>materials</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\dstructs.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\dependencies.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\memory\memory.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\materials\mirror.cu">
+      <Filter>materials</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\materials\plastic.cuh">
+      <Filter>materials</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\materials\plastic.cu">
+      <Filter>materials</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\shape.cu">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\surfaceInteraction.cu">
+      <Filter>core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\core\visibilityTester.cuh">
+      <Filter>core</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\GLFW\lib\glfw3.lib">

@@ -3,8 +3,10 @@
 #include "lights/pointLight.cuh"
 #include "core/dstructs.cuh"
 
+#include <iostream>
+
 __global__
-void render(float4* pixel, Shape** object_list, unsigned int N, Camera camera, vec3 point_light, const int width, const int height)
+void render(float4* pixel, Instance** object_list, unsigned int N, Camera camera, point3 point_light, const int width, const int height)
 {
     int maxDepth = 3;
 
@@ -37,16 +39,16 @@ void render(float4* pixel, Shape** object_list, unsigned int N, Camera camera, v
         VisibilityTester visibility(object_list, N);
 
         PointLight light(point_light);
-        vec3 I = light.sample_li(rec, visibility, wi, in_shadow);
+        Spectrum I = light.sample_li(rec, visibility, wi, in_shadow);
 
-        vec3 color = shade(rec, wi, in_shadow);   // for more than 1 ls -> color += shade() and inside for loop
+        Spectrum color = shade(rec, wi, in_shadow);   // for more than 1 ls -> color += shade() and inside for loop
 
         // trace rays for specular reflection and refraction
         ray.direction = rec.wo;
         //for (int i = 0; i < maxDepth - 1; ++i)
         //{
-        //    color += specularReflect(ray, rec, object_list, N, light, memory);
-        //    //color += specularRefract(ray, rec, object_list, N, light, memory);
+        //    //color += specularReflect(ray, rec, object_list, N, light, memory);
+        //    color += specularRefract(ray, rec, object_list, N, light, memory);
         //}
         color += specularBounces(rec, maxDepth, object_list, N, light, memory);
 
@@ -56,10 +58,10 @@ void render(float4* pixel, Shape** object_list, unsigned int N, Camera camera, v
 
 void callRayTracingKernel(
     float4* d_pixel,
-    Shape** object_list,
+    Instance** object_list,
     unsigned int N,
     Camera camera,
-    vec3 point_light,
+    point3 point_light,
     const int width,
     const int height)
 {
@@ -69,16 +71,16 @@ void callRayTracingKernel(
     cudaDeviceSynchronize();
 }
 
-__device__ 
-vec3 specularBounces(const SurfaceInteraction& isect, const int maxDepth, Shape** scene, const int& N, PointLight light, MemoryManager& memory)
+__device__
+Spectrum specularBounces(const SurfaceInteraction& isect, const int maxDepth, Instance** scene, const int& N, PointLight light, MemoryManager& memory)
 {
-    const int refraction_rays = (powf(2, maxDepth)-2)/2;
+    const int refraction_rays = (powf(2, maxDepth) - 2) / 2;
 
-    vec3 color(0.0f);
+    Spectrum color(0.0f);
     Stack<Ray> refraction_stack(refraction_rays);
     Stack<int> depth_stack(maxDepth);
-    Stack<vec3> fresnel_stack(refraction_rays);
-    Stack<vec3> normal_stack(refraction_rays);
+    Stack<Spectrum> fresnel_stack(refraction_rays);
+    Stack<normal3> normal_stack(refraction_rays);
 
     int tree_depth = 1;
     bool continue_loop = true;
@@ -88,24 +90,26 @@ vec3 specularBounces(const SurfaceInteraction& isect, const int maxDepth, Shape*
     vec3 wo = isect.wo;         // outgoing direction
     vec3 wr;                    // reflected/transmited direction
     vec3 wt;                    // transmited direction
-    vec3 n = isect.n;           // normal at intersection point
+    normal3 n = isect.n;        // normal at intersection point
     vec3 wi;                    // incident direction (either reflected/transmited) -- to be used in the loop
 
     // Specular reflection
-    vec3 f = isect.bsdf.sample_f(wo, wr, BxDFType::SPECULAR_REFLECTION);
+    Spectrum f = isect.bsdf.sample_f(wo, wr, BxDFType::SPECULAR_REFLECTION);
     if (!f.isBlack() && fabs(dot(wr, n)) != 0.0f && tree_depth < maxDepth)
+    {
         ray = Ray(isect.p + wr * 0.0001f, wr);
 
-    // Specular refraction
-    vec3 f_t = isect.bsdf.sample_f(wo, wt, BxDFType::SPECULAR_REFRACTION);
-    if (!f_t.isBlack() && fabs(dot(wt, n)) != 0.0f && tree_depth < maxDepth)
-    {
-        refraction_stack.push(Ray(isect.p + wt * 0.0001f, wt));
-        depth_stack.push(tree_depth);
-        fresnel_stack.push(f_t);
-        normal_stack.push(n);
+        // if there Specular refraction
+        Spectrum f_t = isect.bsdf.sample_f(wo, wt, BxDFType::SPECULAR_REFRACTION);
+        if (!f_t.isBlack() && fabs(dot(wt, n)) != 0.0f && tree_depth < maxDepth)
+        {
+            refraction_stack.push(Ray(isect.p + wt * 0.0001f, wt));
+            depth_stack.push(tree_depth);
+            fresnel_stack.push(f_t);
+            normal_stack.push(n);
+        }
     }
-        
+
     while (continue_loop)
     {
         wi = ray.direction;
@@ -125,7 +129,7 @@ vec3 specularBounces(const SurfaceInteraction& isect, const int maxDepth, Shape*
                 bool in_shadow;
                 VisibilityTester visibility(scene, N);
 
-                vec3 I = light.sample_li(isect, visibility, wi, in_shadow);
+                Spectrum I = light.sample_li(isect, visibility, wi, in_shadow);
 
                 color += f * shade(isect, wi, in_shadow) * fabs(dot(ray.direction, n));
 
@@ -136,20 +140,20 @@ vec3 specularBounces(const SurfaceInteraction& isect, const int maxDepth, Shape*
                 n = isect.n;                // normal at intersection point
 
                 // Specular reflection
-                vec3 f = isect.bsdf.sample_f(wo, wr, BxDFType::SPECULAR_REFLECTION);
+                Spectrum f = isect.bsdf.sample_f(wo, wr, BxDFType::SPECULAR_REFLECTION);
                 if (!f.isBlack() && fabs(dot(wr, n)) != 0.0f)
-                    ray = Ray(isect.p + wr * 0.0001f, wr);
-                else
-                    continue_loop = false;
-
-                // Specular refraction
-                vec3 f_t = isect.bsdf.sample_f(wo, wt, BxDFType::SPECULAR_REFRACTION);
-                if (!f_t.isBlack() && fabs(dot(wt, n)) != 0.0f)
                 {
-                    refraction_stack.push(Ray(isect.p + wt * 0.0001f, wt));
-                    depth_stack.push(tree_depth);
-                    fresnel_stack.push(f_t);
-                    normal_stack.push(n);
+                    ray = Ray(isect.p + wr * 0.0001f, wr);
+
+                    // Specular refraction
+                    Spectrum f_t = isect.bsdf.sample_f(wo, wt, BxDFType::SPECULAR_REFRACTION);
+                    if (!f_t.isBlack() && fabs(dot(wt, n)) != 0.0f)
+                    {
+                        refraction_stack.push(Ray(isect.p + wt * 0.0001f, wt));
+                        depth_stack.push(tree_depth);
+                        fresnel_stack.push(f_t);
+                        normal_stack.push(n);
+                    }
                 }
                 else
                     continue_loop = false;
@@ -157,15 +161,17 @@ vec3 specularBounces(const SurfaceInteraction& isect, const int maxDepth, Shape*
             }
             else
                 continue_loop = false;
-
         }
         else
         {
-            color += vec3(0.0f);
+            color += Spectrum(0.0f);
             continue_loop = false;
         }
 
-        if (!continue_loop && !refraction_stack.isEmpty() && !depth_stack.isEmpty() && !fresnel_stack.isEmpty())
+        if (!continue_loop && !refraction_stack.isEmpty() && 
+            !depth_stack.isEmpty() && 
+            !fresnel_stack.isEmpty() && 
+            !normal_stack.isEmpty())
         {
             ray = refraction_stack.pop();
             tree_depth = depth_stack.pop();
@@ -178,14 +184,14 @@ vec3 specularBounces(const SurfaceInteraction& isect, const int maxDepth, Shape*
 }
 
 __device__
-vec3 specularReflect(Ray& ray, SurfaceInteraction& isect, Shape** scene, const int& N, PointLight light, MemoryManager& memory)
+Spectrum specularReflect(Ray& ray, SurfaceInteraction& isect, Instance** scene, const int& N, PointLight light, MemoryManager& memory)
 {
     vec3 wo = isect.wo;
     vec3 wi;  // specular reflected direction
 
-    vec3 n = isect.n;
+    normal3 n = isect.n;
     BxDFType type = BxDFType::SPECULAR_REFLECTION;
-    vec3 f = isect.bsdf.sample_f(wo, wi, type);
+    Spectrum f = isect.bsdf.sample_f(wo, wi, type);
     
     if (!f.isBlack() && fabs(dot(wi, n)) != 0.0f)
     {
@@ -207,28 +213,28 @@ vec3 specularReflect(Ray& ray, SurfaceInteraction& isect, Shape** scene, const i
             bool in_shadow;
             VisibilityTester visibility(scene, N);
 
-            vec3 I = light.sample_li(isect, visibility, wi, in_shadow);
+            Spectrum I = light.sample_li(isect, visibility, wi, in_shadow);
 
-            vec3 color = f * shade(isect, wi, in_shadow) * fabs(dot(ray.direction, n));
+            Spectrum color = f * shade(isect, wi, in_shadow) * fabs(dot(ray.direction, n));
             return color;
         }
         else
-            return vec3(0.0f);
+            return Spectrum(0.0f);
     }
     else
-        return vec3(0.0f);
+        return Spectrum(0.0f);
 
 }
 
 __device__
-vec3 specularRefract(Ray& ray, SurfaceInteraction& isect, Shape** scene, const int& N, PointLight light, MemoryManager& memory)
+Spectrum specularRefract(Ray& ray, SurfaceInteraction& isect, Instance** scene, const int& N, PointLight light, MemoryManager& memory)
 {
     vec3 wo = isect.wo;
     vec3 wi;            // specular refracted direction
 
-    vec3 n = isect.n;   
+    normal3 n = isect.n;   
     BxDFType type = BxDFType::SPECULAR_REFRACTION;
-    vec3 f = isect.bsdf.sample_f(wo, wi, type);
+    Spectrum f = isect.bsdf.sample_f(wo, wi, type);
     
     if (!f.isBlack() && fabs(dot(wi, n)) != 0.0f)
     {
@@ -252,16 +258,16 @@ vec3 specularRefract(Ray& ray, SurfaceInteraction& isect, Shape** scene, const i
             bool in_shadow;
             VisibilityTester visibility(scene, N);
 
-            vec3 I = light.sample_li(isect, visibility, wi, in_shadow);
+            Spectrum I = light.sample_li(isect, visibility, wi, in_shadow);
 
-            vec3 color = f * shade(isect, wi, in_shadow) * fabs(dot(ray.direction, n));
+            Spectrum color = f * shade(isect, wi, in_shadow) * fabs(dot(ray.direction, n));
             return color;
 
         }
         else
-            return vec3(0.0f);
+            return Spectrum(0.0f);
 
     }
     else
-        return vec3(0.0f);
+        return Spectrum(0.0f);
 }

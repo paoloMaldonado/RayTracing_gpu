@@ -11,19 +11,19 @@ class PointLight;
 
 void callRayTracingKernel(
     float4* d_pixel,
-    Shape** object_list,
+    Instance** object_list,
     unsigned int N,
     Camera camera,
-    vec3 point_light,
+    point3 point_light,
     const int width,
     const int height);
 
 __device__
-vec3 specularBounces(const SurfaceInteraction& isect, const int maxDepth, Shape** scene, const int& N, PointLight light, MemoryManager& memory);
+Spectrum specularBounces(const SurfaceInteraction& isect, const int maxDepth, Instance** scene, const int& N, PointLight light, MemoryManager& memory);
 __device__
-vec3 specularReflect(Ray& ray, SurfaceInteraction& isect, Shape** scene, const int& N, PointLight light, MemoryManager& memory);
+Spectrum specularReflect(Ray& ray, SurfaceInteraction& isect, Instance** scene, const int& N, PointLight light, MemoryManager& memory);
 __device__
-vec3 specularRefract(Ray& ray, SurfaceInteraction& isect, Shape** scene, const int& N, PointLight light, MemoryManager& memory);
+Spectrum specularRefract(Ray& ray, SurfaceInteraction& isect, Instance** scene, const int& N, PointLight light, MemoryManager& memory);
 
 #endif
 

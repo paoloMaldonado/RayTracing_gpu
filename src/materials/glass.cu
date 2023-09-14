@@ -2,13 +2,13 @@
 #include "memory/memory.cuh"
 
 __device__
-GlassMaterial::GlassMaterial(const vec3& Ks, const vec3& Kt, const float& eta) : Ks(Ks), Kt(Kt), eta(eta)
+GlassMaterial::GlassMaterial(const Spectrum& Ks, const Spectrum& Kt, const float& eta) : Ks(Ks), Kt(Kt), eta(eta)
 {}
 
 __device__
 void GlassMaterial::compute_scattering_functions(SurfaceInteraction* si, MemoryManager& mem_buffer)
 {
-	vec3 normal = si->n;
+	normal3 normal = si->n;
 
 	if (Ks.isBlack() && Kt.isBlack()) return;
 

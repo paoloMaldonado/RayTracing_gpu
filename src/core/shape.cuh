@@ -14,7 +14,7 @@ public:
 	__device__ 
 	virtual bool hitted_by(const Ray& ray, float& t) const = 0;
 	__device__
-	virtual vec3 compute_normal_at(const vec3& p) const = 0;
+	virtual normal3 compute_normal_at(const point3& p) const = 0;
 	__device__
 	void compute_scattering_functions(SurfaceInteraction* si, MemoryManager& mem_buffer);
 };

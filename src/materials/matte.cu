@@ -2,7 +2,7 @@
 #include "memory/memory.cuh"
 
 __device__
-MatteMaterial::MatteMaterial(const vec3& Kd) : Kd(Kd)
+MatteMaterial::MatteMaterial(const Spectrum& Kd) : Kd(Kd)
 {}
 
 __device__

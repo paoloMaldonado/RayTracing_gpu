@@ -8,11 +8,11 @@
 class MirrorMaterial : public Material
 {
 public:
-	vec3 Ks;
+	Spectrum Ks;
 
 	MirrorMaterial() = default;
 	__device__
-	MirrorMaterial(const vec3 & Ks);
+	MirrorMaterial(const Spectrum & Ks);
 	__device__
 	virtual ~MirrorMaterial() {}
 	__device__

@@ -8,11 +8,11 @@
 class MatteMaterial : public Material
 {
 public:
-	vec3 Kd;
+	Spectrum Kd;
 
 	MatteMaterial() = default;
 	__device__
-	MatteMaterial(const vec3& Kd);
+	MatteMaterial(const Spectrum& Kd);
 	__device__
 	virtual ~MatteMaterial() {}
 	__device__

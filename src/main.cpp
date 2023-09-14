@@ -38,7 +38,7 @@ int main()
 
     // set 1.0f to be in front of the shapes (smaller projection), values > 1.0f set the view plane behind the shapes (bigger projection)
     // this phenomenom is due to the center of projection being located at the camera origin (and also because perspective projection works like that)
-    Camera camera(vec3(0.0f, 0.0f, 1.0f), 1.0f); 
+    Camera camera(point3(0.0f, 0.0f, 1.0f), 1.0f); 
 
     WindowHandler window_handler(SCR_WIDTH, SCR_HEIGHT, "raytracing");
     window_handler.mark_as_current_context();
@@ -91,7 +91,7 @@ int main()
 
     // Graphics settings
 
-    vec3 light(8.5f, 5.5f, 10.0f);
+    point3 light(8.5f, 5.5f, 10.0f);
 
     //Colors
     //vec3 RED = vec3(1.0f, 0.0f, 0.0f);
@@ -111,9 +111,16 @@ int main()
     //std::vector<Sphere> spheres = {object_1, object_2, object_3, object_4};
 
     Shape** spheres = nullptr;
+    Instance** instances = nullptr;
     Material** materials = nullptr;
 
-    Scene scene(spheres, 4, materials, 3); //instantiate 4 spheres on GPU
+    //instantiate 4 spheres on GPU
+    Scene scene(spheres,        // list of objects
+                instances,      // list of instances (references to real objects)
+                4,              // number of objects 
+                4,              // number of instances from an object(s) to render
+                materials,      // list of materials
+                3);             // number of materials to allocate
     scene.build();
 
     // render loop
@@ -136,7 +143,7 @@ int main()
         //float4* dptr = graphicsResource.mapAndReturnDevicePointer();
 
         // launch kernel
-        callRayTracingKernel(dptr, scene.d_objects, scene.primitive_count, camera, light, SCR_WIDTH, SCR_HEIGHT);
+        callRayTracingKernel(dptr, scene.d_instances, scene.instance_count, camera, light, SCR_WIDTH, SCR_HEIGHT);
 
         cudaGraphicsUnmapResources(1, &tex_data_resource, 0);
         //graphicsResource.unmap();

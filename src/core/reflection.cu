@@ -15,9 +15,9 @@ BSDF::~BSDF()
 }
 
 __device__
-vec3 BSDF::f(const vec3& wi, const vec3& wo) const
+Spectrum BSDF::f(const vec3& wi, const vec3& wo) const
 {
-	vec3 f(0.0f);
+	Spectrum f(0.0f);
 	for (int i = 0; i < num_bxdfs; ++i)
 	{
 		f += bxdfs[i]->f(wi, wo);
@@ -26,9 +26,9 @@ vec3 BSDF::f(const vec3& wi, const vec3& wo) const
 }
 
 __device__ 
-vec3 BSDF::sample_f(const vec3& wo, vec3& wi, const BxDFType& type) const
+Spectrum BSDF::sample_f(const vec3& wo, vec3& wi, const BxDFType& type) const
 {
-	vec3 f(0.0f);
+	Spectrum f(0.0f);
 	BxDF* bxdf = nullptr;
 	for (int i = 0; i < num_bxdfs; ++i)
 	{
@@ -43,7 +43,7 @@ vec3 BSDF::sample_f(const vec3& wo, vec3& wi, const BxDFType& type) const
 }
 
 __device__ 
-vec3 refract(const vec3& n, const vec3& wi, const float& etaRatio)
+bool refract(const normal3& n, const vec3& wi, const float& etaRatio, vec3& wo)
 {
 	float cosThetaI = dot(wi, n);
 	// compute cosThetaT using Snell's Law
@@ -51,16 +51,18 @@ vec3 refract(const vec3& n, const vec3& wi, const float& etaRatio)
 	float sin2ThetaT = etaRatio * etaRatio * sin2ThetaI;
 	// check for total internal reflection (TIR)
 	if (sin2ThetaT >= 1.0f)
-		return vec3(0.0f); // no refraction
+		return false; // no refraction
 	
 	float cosThetaT = sqrtf(1.0f - sin2ThetaT);
 
-	return etaRatio * -wi + (etaRatio * cosThetaI - cosThetaT) * n;
+	wo = etaRatio * -wi + (etaRatio * cosThetaI - cosThetaT) * n;
+	return true;
 }
 
 __device__
 float reflectanceFresnel(float cosThetaI, float etaI, float etaT)
 {
+	cosThetaI = clamp(cosThetaI, -1.0f, 1.0f);
 	// determine which index is incident and which is refracted
 	bool entering = cosThetaI > 0.0f;
 	if (!entering)

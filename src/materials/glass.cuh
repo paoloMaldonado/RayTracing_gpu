@@ -8,13 +8,13 @@
 class GlassMaterial : public Material
 {
 public:
-	vec3 Ks;
-	vec3 Kt;
+	Spectrum Ks;
+	Spectrum Kt;
 	float eta;
 
 	GlassMaterial() = default;
 	__device__
-	GlassMaterial(const vec3& Ks, const vec3& Kt, const float& eta);
+	GlassMaterial(const Spectrum& Ks, const Spectrum& Kt, const float& eta);
 	__device__
 	virtual ~GlassMaterial() {}
 	__device__

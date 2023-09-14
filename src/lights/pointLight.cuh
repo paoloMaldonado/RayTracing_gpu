@@ -7,21 +7,21 @@
 class PointLight
 {
 public:
-	vec3 pos;
+	point3 pos;
 	
 	PointLight() = default;
 	__device__
-	PointLight(const vec3& position) : pos(position)
+	PointLight(const point3& position) : pos(position)
 	{}
 	__device__
-	vec3 sample_li(const SurfaceInteraction& rec, const VisibilityTester& visibility, vec3& wi, bool& in_shadow) const
+	Spectrum sample_li(const SurfaceInteraction& rec, const VisibilityTester& visibility, vec3& wi, bool& in_shadow) const
 	{
-		vec3 p = rec.p;
+		point3 p = rec.p;
 		wi = normalize(pos - p);
 		Ray shadow_ray = Ray(p + wi*0.0001f, wi);
 		in_shadow = visibility.test_shadow(shadow_ray);
 
-		return vec3(1.0f);  // white light
+		return Spectrum(1.0f);  // white light
 	}
 };
 

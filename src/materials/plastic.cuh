@@ -8,14 +8,14 @@
 class PlasticMaterial : public Material
 {
 public:
-	vec3 Kd;
-	vec3 Ks;
+	Spectrum Kd;
+	Spectrum Ks;
 	float shininess;
 	bool blinn;
 
 	PlasticMaterial() = default;
 	__device__
-	PlasticMaterial(const vec3& Kd, const vec3& Ks, const float& shininess, const bool blinn = 0);
+	PlasticMaterial(const Spectrum& Kd, const Spectrum& Ks, const float& shininess, const bool blinn = 0);
 	__device__
 	virtual ~PlasticMaterial() {}
 	__device__

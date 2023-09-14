@@ -1,7 +1,7 @@
 #if !defined(__UTILS_GPU_CUH__)
 #define __UTILS_GPU_CUH__
 
-#include "core/vec3.cuh"
+#include "core/geometry.cuh"
 
 __device__
 inline float pi() { return 3.14159265358979323846f; }
@@ -19,7 +19,13 @@ __device__ void swap(T& a, T& b)
 __device__
 inline bool areEqualf(const float& a, const float& b, const float& epsilon = 0.0001f)
 {
-	return (fabs(a - b) < epsilon) ? true : false;
+	return (fabsf(a - b) < epsilon) ? true : false;
+}
+
+__device__ 
+inline float clamp(float f, float a, float b)
+{
+	return fmaxf(a, fminf(f, b));
 }
 
 #endif
