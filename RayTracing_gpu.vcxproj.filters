@@ -196,6 +196,7 @@
     <ClInclude Include="src\lights\pointLight.cuh">
       <Filter>lights</Filter>
     </ClInclude>
+    <ClInclude Include="src\shapes\compound.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\core\camera.cuh">
@@ -303,6 +304,9 @@
     <CudaCompile Include="src\core\visibilityTester.cuh">
       <Filter>core</Filter>
     </CudaCompile>
+    <CudaCompile Include="src\shapes\triangle.cu" />
+    <CudaCompile Include="src\shapes\triangle.cuh" />
+    <CudaCompile Include="src\shapes\compound.cu" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\GLFW\lib\glfw3.lib">

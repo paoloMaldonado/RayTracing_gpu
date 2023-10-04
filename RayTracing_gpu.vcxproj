@@ -201,7 +201,9 @@
     <CudaCompile Include="src\materials\glass.cu" />
     <CudaCompile Include="src\materials\mirror.cu" />
     <CudaCompile Include="src\materials\plastic.cu" />
+    <CudaCompile Include="src\shapes\compound.cu" />
     <CudaCompile Include="src\shapes\instance.cu" />
+    <CudaCompile Include="src\shapes\triangle.cu" />
     <CudaCompile Include="src\utility\utils.cuh" />
     <CudaCompile Include="src\core\surfaceInteraction.cuh" />
     <CudaCompile Include="src\core\shape.cuh" />
@@ -218,6 +220,8 @@
     <CudaCompile Include="src\materials\glass.cuh" />
     <ClInclude Include="src\materials\mirror.cuh" />
     <CudaCompile Include="src\shapes\instance.cuh" />
+    <CudaCompile Include="src\shapes\triangle.cuh" />
+    <ClInclude Include="src\shapes\compound.cuh" />
     <ClInclude Include="src\utility\Utils.h" />
     <CudaCompile Include="src\cudaRaytracing.cuh" />
     <ClInclude Include="src\input\MouseInput.h" />

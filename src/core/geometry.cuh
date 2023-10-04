@@ -81,6 +81,9 @@ public:
 	normal3(const float& v) : x(v), y(v), z(v)
 	{}
 	__host__ __device__
+	normal3(const vec3& v) : x(v.x), y(v.y), z(v.z)
+	{}
+	__host__ __device__
 	inline normal3 operator+(const normal3& b) const { return normal3(x + b.x, y + b.y, z + b.z); }
 	__host__ __device__
 	inline normal3 operator-(const normal3& b) const { return normal3(x - b.x, y - b.y, z - b.z); }

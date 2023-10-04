@@ -17,6 +17,7 @@ private:
 	float _lastX;
 	float _lastY;
 	bool  _firstMouse;
+	static float PITCH_BOUND;
 
 	void setRotationOffset(const float& xpos, const float& ypos);
 	static void callback(GLFWwindow* window, double xpos, double ypos);

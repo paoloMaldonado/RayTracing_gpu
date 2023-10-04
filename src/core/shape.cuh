@@ -8,7 +8,9 @@ class Shape
 public:
 	Material* material;
 
-	Shape() = default;
+	__device__
+	Shape() : material(nullptr)
+	{}
 	__device__
 	Shape(Material* mat);
 	__device__ 
@@ -17,6 +19,10 @@ public:
 	virtual normal3 compute_normal_at(const point3& p) const = 0;
 	__device__
 	void compute_scattering_functions(SurfaceInteraction* si, MemoryManager& mem_buffer);
+	__device__
+	virtual Shape* get_shape() = 0;
+	__device__
+	void add_material(Material* material) { this->material = material; };
 };
 
 #endif

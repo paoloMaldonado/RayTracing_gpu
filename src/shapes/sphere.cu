@@ -29,3 +29,9 @@ bool Sphere::hitted_by(const Ray& ray, float& t) const
 	}
 	return false;
 }
+
+__device__
+Shape* createSphereShape(const point3& center, const float& radius)
+{
+	return new Sphere(center, radius);
+}

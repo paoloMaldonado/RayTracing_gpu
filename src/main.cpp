@@ -110,16 +110,8 @@ int main()
 
     //std::vector<Sphere> spheres = {object_1, object_2, object_3, object_4};
 
-    Shape** spheres = nullptr;
-    Instance** instances = nullptr;
-    Material** materials = nullptr;
-
     //instantiate 4 spheres on GPU
-    Scene scene(spheres,        // list of objects
-                instances,      // list of instances (references to real objects)
-                4,              // number of objects 
-                4,              // number of instances from an object(s) to render
-                materials,      // list of materials
+    Scene scene(3,              // number of primitives
                 3);             // number of materials to allocate
     scene.build();
 
@@ -143,7 +135,7 @@ int main()
         //float4* dptr = graphicsResource.mapAndReturnDevicePointer();
 
         // launch kernel
-        callRayTracingKernel(dptr, scene.d_instances, scene.instance_count, camera, light, SCR_WIDTH, SCR_HEIGHT);
+        callRayTracingKernel(dptr, scene.d_instances, scene.nPrimitives, camera, light, SCR_WIDTH, SCR_HEIGHT);
 
         cudaGraphicsUnmapResources(1, &tex_data_resource, 0);
         //graphicsResource.unmap();

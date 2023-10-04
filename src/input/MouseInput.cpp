@@ -1,6 +1,7 @@
 #include "MouseInput.h"
 
 MouseInput* MouseInput::instance = nullptr;
+float MouseInput::PITCH_BOUND = 1.22173047639603070f;
 
 MouseInput::MouseInput(const float& sensitivity, const int& width, const int& height, float& pitch, float& yaw) :
 	_sensitivity(sensitivity), _pitch(pitch), _yaw(yaw), _firstMouse(true)
@@ -48,6 +49,11 @@ void MouseInput::setRotationOffset(const float& xpos, const float& ypos)
 
 	_yaw += xoffset;
 	_pitch += yoffset;
+
+	if (_pitch > MouseInput::PITCH_BOUND)
+		_pitch = MouseInput::PITCH_BOUND;
+	if (_pitch < -MouseInput::PITCH_BOUND)
+		_pitch = -MouseInput::PITCH_BOUND;
 }
 
 void MouseInput::callback(GLFWwindow* window, double xpos, double ypos)

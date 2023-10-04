@@ -15,6 +15,9 @@ public:
 	__device__
 	Sphere(const point3& c, const float& r, Material* mat) : center(c), radius(r), Shape(mat)
 	{}
+	__device__
+	Sphere(const point3& c, const float& r) : center(c), radius(r)
+	{}
 	__device__ 
 	virtual bool hitted_by(const Ray& ray, float& t) const override;
 	__device__ 
@@ -23,6 +26,11 @@ public:
 		vec3 n = (p - center)/radius;
 		return normal3(n.x, n.y, n.z);
 	}
+	__device__
+	virtual Shape* get_shape() override { return this; }
 };
+
+__device__
+Shape* createSphereShape(const point3& center, const float& radius);
 
 #endif

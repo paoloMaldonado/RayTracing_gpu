@@ -8,15 +8,15 @@
 class Scene
 {
 public:
-	Shape** d_shapes;			       // explicit shapes (device pointer)
-	Instance** d_instances;			   // GPU (device pointer) - instancing
+	Shape** d_shapes;				   // explicit shapes (device pointer)
+	Instance** d_instances;		       // GPU (device pointer) - instancing
 	Material** d_materials;
-	unsigned int instance_count;
-	unsigned int primitive_count;
-	unsigned int material_count;
+	unsigned int nPrimitives;
+	unsigned int nMaterials;
 
 	Scene() = default;
-	Scene(Shape** list_shapes, Instance** list_instances, const unsigned int& N_obj, const unsigned int& N, Material** list_materials, const unsigned int& nMat);
+	Scene(const unsigned int& nPrimitives, const unsigned int& nMaterials);
+	//void makeShapes(Shape** shapes, const unsigned int& nPrimitives);
 	void build();
 	void destroy();
 };

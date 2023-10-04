@@ -11,6 +11,20 @@ Instance::Instance(Shape* object_ptr, const Transform& transform) :
 {}
 
 __device__
+Instance::Instance(Shape* object_ptr, Material* material) :
+	object_ptr(object_ptr)
+{
+	object_ptr->add_material(material);
+}
+
+__device__
+Instance::Instance(Shape* object_ptr, const Transform& transform, Material* material) :
+	object_ptr(object_ptr), inv_matrix(transform)
+{
+	object_ptr->add_material(material);
+}
+
+__device__
 bool Instance::hitted_by(const Ray& ray, float& t, Ray& inv_ray) const
 {
 	inv_ray = inv_matrix(ray);

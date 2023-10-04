@@ -9,6 +9,8 @@ __device__
 inline float twopi() { return 6.28318530717958647692f; }
 __device__
 inline float invPi() { return 0.31830988618379067154f; }
+__device__
+inline float epsilon() { return 0.0001f; }
 
 template <class T>
 __device__ void swap(T& a, T& b)

@@ -26,7 +26,7 @@ inline bool intersection(const Ray& ray, Instance** object_list, const unsigned 
 				// compute wo (outgoing) direction
 				rec.wo        = -ray.direction;
 				// intersected primitive
-				rec.hitobject = object_list[i]->object_ptr;   // hitobject will live as long as shape lives (both holds the same address)
+				rec.hitobject = object_list[i]->object_ptr->get_shape();   // hitobject will live as long as shape lives (both holds the same address)
 				// normal at intersection point (transformed normal)
 				point3 p_at_untransformed = inv_ray.point_at_parameter(t_0);
 				rec.n         = object_list[i]->compute_normal(p_at_untransformed);
