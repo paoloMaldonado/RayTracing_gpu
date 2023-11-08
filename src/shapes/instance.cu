@@ -6,7 +6,7 @@ Instance::Instance(Shape* object_ptr) : object_ptr(object_ptr)	// the inv_matrix
 {}
 
 __device__
-Instance::Instance(Shape* object_ptr, const Transform& transform) : 
+Instance::Instance(Shape* object_ptr, const Transform* transform) : 
 	object_ptr(object_ptr), inv_matrix(transform)
 {}
 
@@ -18,7 +18,7 @@ Instance::Instance(Shape* object_ptr, Material* material) :
 }
 
 __device__
-Instance::Instance(Shape* object_ptr, const Transform& transform, Material* material) :
+Instance::Instance(Shape* object_ptr, const Transform* transform, Material* material) :
 	object_ptr(object_ptr), inv_matrix(transform)
 {
 	object_ptr->add_material(material);
@@ -27,7 +27,7 @@ Instance::Instance(Shape* object_ptr, const Transform& transform, Material* mate
 __device__
 bool Instance::hitted_by(const Ray& ray, float& t, Ray& inv_ray) const
 {
-	inv_ray = inv_matrix(ray);
+	inv_ray = (*inv_matrix)(ray);
 
 	if (object_ptr->hitted_by(inv_ray, t))
 	{
@@ -42,6 +42,6 @@ __device__
 normal3 Instance::compute_normal(const point3& p) const
 {
 	normal3 normal = object_ptr->compute_normal_at(p);		// compute the normal at the untransformed object
-	normal = inv_matrix(normal);							// transpose of the inverse matrix
+	normal = (*inv_matrix)(normal);							// transpose of the inverse matrix
 	return normalize(normal);
 }

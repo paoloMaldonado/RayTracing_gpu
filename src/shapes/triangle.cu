@@ -1,15 +1,38 @@
 #include "triangle.cuh"
 #include "utility/utils.cuh"
+#include <iostream>
+
+//__device__
+//TriangleMesh::TriangleMesh(const int& nVertices, const int& nTriangles, const int* vIndices, const point3* P) :
+//	nVertices(nVertices), nTriangles(nTriangles)
+//{
+//	vertexIndices = new int[nTriangles * 3];
+//	p = new point3[nVertices];
+//
+//	for (int i = 0; i < 3 * nTriangles; ++i) 
+//		vertexIndices[i] = vIndices[i];
+//
+//	for (int i = 0; i < nVertices; ++i) 
+//		p[i] = P[i];
+//}
 
 __device__
-TriangleMesh::TriangleMesh(const int& nVertices, const int& nTriangles, const int* vIndices, const point3* P) :
-	nVertices(nVertices), nTriangles(nTriangles)
+TriangleMesh::TriangleMesh(const int& nTriangles, const int* vIndices, point3* P) :
+	nTriangles(nTriangles)
 {
-	for (int i = 0; i < 3 * nTriangles; ++i) 
+	vertexIndices = new int[nTriangles * 3];
+
+	for (int i = 0; i < 3 * nTriangles; ++i)
 		vertexIndices[i] = vIndices[i];
 
-	for (int i = 0; i < nVertices; ++i) 
-		p[i] = P[i];
+	p = P;
+}
+
+__device__
+TriangleMesh::~TriangleMesh()
+{
+	delete[] vertexIndices;
+	//delete[] p;
 }
 
 __device__
@@ -95,11 +118,11 @@ normal3 Triangle::compute_normal_at(const point3& p) const
 }
 
 __device__
-Shape** createTriangleMeshShape(const int& nVertices, const int& nTriangles, int* d_vIndices, point3* d_P)
+Shape** createTriangleMeshShape(const int& nTriangles, int* d_vIndices, point3* d_P)
 {
 	Shape** d_triangles = new Shape*[nTriangles];
 
-	TriangleMesh* mesh = new TriangleMesh(nVertices, nTriangles, d_vIndices, d_P);
+	TriangleMesh* mesh = new TriangleMesh(nTriangles, d_vIndices, d_P);
 	for (int i = 0; i < nTriangles; ++i)
 	{
 		d_triangles[i] = new Triangle(mesh, i);

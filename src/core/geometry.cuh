@@ -208,6 +208,9 @@ public:
 	Spectrum(const float& v) : x(v), y(v), z(v)
 	{}
 	__host__ __device__
+	Spectrum(const float v[3]) : x(v[0]), y(v[1]), z(v[2])
+	{}
+	__host__ __device__
 	inline Spectrum operator+(const Spectrum& b) const { return Spectrum(x + b.x, y + b.y, z + b.z); }
 	__host__ __device__
 	inline Spectrum operator-(const Spectrum& b) const { return Spectrum(x - b.x, y - b.y, z - b.z); }

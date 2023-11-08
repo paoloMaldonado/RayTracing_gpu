@@ -8,14 +8,18 @@
 class TriangleMesh
 {
 public:
-	int nVertices;
+	//int nVertices;
 	int nTriangles;
-	int vertexIndices[9];   // 3 triangles * 3   1 triangle * 3
-	point3 p[4];
+	int* vertexIndices;   // 3 triangles * 3   1 triangle * 3
+	point3* p;
 
 	TriangleMesh() = default;
+	//__device__
+	//TriangleMesh(const int& nVertices, const int& nTriangles, const int* vIndices, const point3* P);
 	__device__
-	TriangleMesh(const int& nVertices, const int& nTriangles, const int* vIndices, const point3* P);
+	TriangleMesh(const int& nTriangles, const int* vIndices, point3* P);
+	__device__
+	~TriangleMesh();
 };
 
 
@@ -41,7 +45,7 @@ public:
 };
 
 __device__
-Shape** createTriangleMeshShape(const int& nVertices, const int& nTriangles, int* d_vIndices, point3* d_P);
+Shape** createTriangleMeshShape(const int& nTriangles, int* d_vIndices, point3* d_P);
 
 
 #endif

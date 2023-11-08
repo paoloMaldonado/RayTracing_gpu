@@ -10,20 +10,20 @@ class Instance
 {
 public:
 	Shape* object_ptr;
-	Transform inv_matrix;
+	const Transform* inv_matrix;
 
 	Instance() = default;
 	__device__
 	Instance(Shape* object_ptr);
 
 	__device__
-	Instance(Shape* object_ptr, const Transform& transform);
+	Instance(Shape* object_ptr, const Transform* transform);
 
 	__device__
 	Instance(Shape* object_ptr, Material* material);
 
 	__device__
-	Instance(Shape* object_ptr, const Transform& transform, Material* material);
+	Instance(Shape* object_ptr, const Transform* transform, Material* material);
 
 	__device__
 	bool hitted_by(const Ray& ray, float& t, Ray& inv_ray) const;

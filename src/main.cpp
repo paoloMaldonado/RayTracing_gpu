@@ -23,6 +23,8 @@
 #include <cuda_gl_interop.h>
 #include "cudaRaytracing.cuh"
 
+#include "render/Loader.h"
+
 void processKeyInputsForCamera(const std::vector<int>& keys, KeyInput& keyInput, Camera& camera);
 
 // timing
@@ -33,12 +35,12 @@ float speed = 1.0f;
 int main()
 {
     const float aspect_ratio = 16.0f / 9.0f;
-    const int SCR_WIDTH = 1024;
+    const int SCR_WIDTH = 800;
     const int SCR_HEIGHT = static_cast<int>(SCR_WIDTH / aspect_ratio);
 
     // set 1.0f to be in front of the shapes (smaller projection), values > 1.0f set the view plane behind the shapes (bigger projection)
     // this phenomenom is due to the center of projection being located at the camera origin (and also because perspective projection works like that)
-    Camera camera(point3(0.0f, 0.0f, 1.0f), 1.0f); 
+    Camera camera(point3(0.0f, 0.0f, 1.0f), 3.0f); 
 
     WindowHandler window_handler(SCR_WIDTH, SCR_HEIGHT, "raytracing");
     window_handler.mark_as_current_context();
@@ -111,9 +113,34 @@ int main()
     //std::vector<Sphere> spheres = {object_1, object_2, object_3, object_4};
 
     //instantiate 4 spheres on GPU
-    Scene scene(3,              // number of primitives
-                3);             // number of materials to allocate
+    Scene scene(12,              // number of primitives (Does not have effect if load_to_gpu() is used)
+                5);              // number of materials to allocate
+
+    //auto indices = loader.Indices();
+
+    //std::cout << "size Host: " << loader.Indices().size() << "\n";
+
+    //for (auto& i : loader.N_triangles_per_shape())
+    //{
+    //    std::cout << i << " ";
+    //}
+
+    //std::cout << "\n";
+
+    //int index_ith = 0;
+    //for (size_t i = 0; i < loader.N_triangles_per_shape().size(); i++)
+    //{
+    //    for (size_t f = 0; f < loader.N_triangles_per_shape().at(i) * 3; f++)
+    //    {
+    //        std::cout << loader.Indices().at(index_ith) << " ";
+    //        index_ith++;
+    //    }
+    //    std::cout << "\n";
+    //}
+
+    scene.load_obj_to_gpu("objects/CornellBox-Original.obj", "objects");
     scene.build();
+
 
     // render loop
     while (!glfwWindowShouldClose(window_handler.window))
@@ -135,7 +162,7 @@ int main()
         //float4* dptr = graphicsResource.mapAndReturnDevicePointer();
 
         // launch kernel
-        callRayTracingKernel(dptr, scene.d_instances, scene.nPrimitives, camera, light, SCR_WIDTH, SCR_HEIGHT);
+        callRayTracingKernel(dptr, scene.get_pointer_to_instances(), scene.number_of_primitives(), camera, light, SCR_WIDTH, SCR_HEIGHT);
 
         cudaGraphicsUnmapResources(1, &tex_data_resource, 0);
         //graphicsResource.unmap();

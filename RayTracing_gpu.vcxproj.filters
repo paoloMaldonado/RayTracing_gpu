@@ -101,6 +101,12 @@
     <ClCompile Include="Common\glad\src\glad.c">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\tiny_obj_loader.cc">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\Loader.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\vertex_shader.vert">
@@ -197,6 +203,12 @@
       <Filter>lights</Filter>
     </ClInclude>
     <ClInclude Include="src\shapes\compound.cuh" />
+    <ClInclude Include="src\render\tiny_obj_loader.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\Loader.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\core\camera.cuh">
@@ -304,9 +316,13 @@
     <CudaCompile Include="src\core\visibilityTester.cuh">
       <Filter>core</Filter>
     </CudaCompile>
-    <CudaCompile Include="src\shapes\triangle.cu" />
-    <CudaCompile Include="src\shapes\triangle.cuh" />
     <CudaCompile Include="src\shapes\compound.cu" />
+    <CudaCompile Include="src\shapes\triangle.cu">
+      <Filter>shapes</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\shapes\triangle.cuh">
+      <Filter>shapes</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\GLFW\lib\glfw3.lib">

@@ -10,7 +10,7 @@ class Compound : Shape
 {
 public:
 	Shape** objects;
-	mutable Shape* isect_object;  // intersected object (if any)
+	Shape* isect_object;  // intersected object (if any)
 	unsigned int nObjects;
 
 	Compound() = default;

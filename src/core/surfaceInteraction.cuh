@@ -9,7 +9,7 @@
 class SurfaceInteraction
 {
 public:
-	float t;
+	float t;  
 	Shape* hitobject;
 	BSDF bsdf;
 	vec3 wo;

@@ -8,13 +8,13 @@ class MemoryManager;
 class Material;
 class Ray;
 class Shape;
+class Transform;
 class Instance;
 class SurfaceInteraction;
 class vec3;
 class normal3;
 class point3;
 class Spectrum;
-
-
+enum MaterialType;
 
 #endif

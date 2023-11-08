@@ -167,6 +167,10 @@
     <ClCompile Include="src\input\KeyInput.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\render\Canvas.cpp" />
+    <ClCompile Include="src\render\Loader.cpp">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="src\render\tiny_obj_loader.cc" />
     <ClCompile Include="src\render\WindowHandler.cpp" />
     <CudaCompile Include="src\core\shape.cu" />
     <CudaCompile Include="src\core\reflection.cu" />
@@ -221,6 +225,8 @@
     <ClInclude Include="src\materials\mirror.cuh" />
     <CudaCompile Include="src\shapes\instance.cuh" />
     <CudaCompile Include="src\shapes\triangle.cuh" />
+    <ClInclude Include="src\render\Loader.h" />
+    <ClInclude Include="src\render\tiny_obj_loader.h" />
     <ClInclude Include="src\shapes\compound.cuh" />
     <ClInclude Include="src\utility\Utils.h" />
     <CudaCompile Include="src\cudaRaytracing.cuh" />

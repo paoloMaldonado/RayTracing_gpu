@@ -30,4 +30,14 @@ inline float clamp(float f, float a, float b)
 	return fmaxf(a, fminf(f, b));
 }
 
+// from: https://stackoverflow.com/a/65419193
+__device__
+inline int cuda_strcmp(const char* s1, const char* s2) 
+{
+    for (; *s1 == *s2; ++s1, ++s2)
+        if (*s1 == 0)
+            return 0;
+    return *(unsigned char*)s1 < *(unsigned char*)s2 ? -1 : 1;
+}
+
 #endif

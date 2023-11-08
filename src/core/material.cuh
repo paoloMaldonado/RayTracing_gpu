@@ -3,6 +3,14 @@
 
 #include "dependencies.cuh"
 
+enum MaterialType
+{
+    MIRROR = 0,
+    GLASS = 1,
+    MATTE = 2,
+    PLASTIC = 3
+};
+
 class Material
 {
 public:

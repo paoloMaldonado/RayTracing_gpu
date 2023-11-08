@@ -14,7 +14,7 @@ bool Compound::hitted_by(const Ray& ray, float& t) const
 		{
 			hit = true;
 			tmin = t;
-			isect_object = objects[i];
+			// ------> TODO
 		}
 	}
 
