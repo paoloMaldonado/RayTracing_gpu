@@ -45,6 +45,9 @@
     <Filter Include="lights">
       <UniqueIdentifier>{a6be9334-36e6-4469-8e95-d1553321ea8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="objects">
+      <UniqueIdentifier>{713f3be5-d181-4fef-a65e-61f9dc30e452}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\imgui\imgui.cpp">
