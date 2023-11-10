@@ -18,7 +18,12 @@ public:
 	{
 		point3 p = rec.p;
 		wi = normalize(pos - p);
-		Ray shadow_ray = Ray(p + wi*0.0001f, wi);
+
+		normal3 n = rec.n; 
+		n = dot(n, rec.wo) < 0.0f ? -n : n;
+		n = n * 0.00001f;
+
+		Ray shadow_ray = Ray(p + n.to_vec3(), wi);
 		in_shadow = visibility.test_shadow(shadow_ray);
 
 		return Spectrum(1.0f);  // white light

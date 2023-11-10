@@ -100,11 +100,26 @@ Shape** makeShapes(const char* name, const unsigned int nPrimitives, int* indice
 __device__
 Material* makeMaterial(const MatParam& material_parameters)
 {
-    if (material_parameters.ilum == MaterialType::MATTE)
+    Material* material = nullptr;
+
+    switch (material_parameters.ilum)
     {
-        Spectrum Kd = material_parameters.Kd;
-        return new MatteMaterial(Kd);
+    case MaterialType::MATTE:
+        material = new MatteMaterial(material_parameters.Kd);
+        break;
+    case MaterialType::MIRROR:
+        material = new MirrorMaterial(material_parameters.Ks);
+        break;
+    case MaterialType::GLASS:
+        material = new GlassMaterial(material_parameters.Ks, 
+                                     Spectrum(0.0f), 
+                                     1.5f);
+        break;
+    default:
+        break;
     }
+
+    return material;
 }
 
 __global__
@@ -135,7 +150,7 @@ void create_scene(Instance** instances, Material** materials, MatParam* material
     {
         int indices_in_shape = triangles_per_shape[p] * 3;
         int* indices_offset = new int[indices_in_shape];
-        memcpy(indices_offset, &indices[srcIdx], indices_in_shape * sizeof(int));
+        memcpy(indices_offset, &indices[srcIdx], indices_in_shape * sizeof(int));   // copy from the index srcIdx (slicing)
 
         // instantiate each shape
         shapes = makeShapes("trianglemesh", triangles_per_shape[p], indices_offset, vertices);
@@ -222,7 +237,7 @@ void Scene::load_obj_to_gpu(std::string inputfile, std::string materialpath)
 
     nPrimitives = obj_loader.TotalTriangles();
 
-    showOBJ<<<1, 1>>>(d_indices, d_vertices, d_material_params, d_triangles_per_shape, size_indices, size_vertices, nObjectsInMesh);
+    //showOBJ<<<1, 1>>>(d_indices, d_vertices, d_material_params, d_triangles_per_shape, size_indices, size_vertices, nObjectsInMesh);
 }
 
 void Scene::build()

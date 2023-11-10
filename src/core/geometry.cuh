@@ -126,6 +126,8 @@ public:
 		return *this;
 	}
 	__host__ __device__
+	inline vec3 to_vec3() { return vec3(x, y, z); }
+	__host__ __device__
 	inline float lenght() const { return sqrtf(x * x + y * y + z * z); }
 	__host__ __device__
 	inline float* value_ptr() { return &(x); }
