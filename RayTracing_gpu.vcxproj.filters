@@ -205,7 +205,6 @@
     <ClInclude Include="src\lights\pointLight.cuh">
       <Filter>lights</Filter>
     </ClInclude>
-    <ClInclude Include="src\shapes\compound.cuh" />
     <ClInclude Include="src\render\tiny_obj_loader.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -319,7 +318,6 @@
     <CudaCompile Include="src\core\visibilityTester.cuh">
       <Filter>core</Filter>
     </CudaCompile>
-    <CudaCompile Include="src\shapes\compound.cu" />
     <CudaCompile Include="src\shapes\triangle.cu">
       <Filter>shapes</Filter>
     </CudaCompile>

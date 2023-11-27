@@ -25,11 +25,11 @@ Instance::Instance(Shape* object_ptr, const Transform* transform, Material* mate
 }
 
 __device__
-bool Instance::hitted_by(const Ray& ray, float& t, Ray& inv_ray) const
+bool Instance::hitted_by(const Ray& ray, float& t, Ray& inv_ray, float& u, float& v) const
 {
-	inv_ray = (*inv_matrix)(ray);
+	//inv_ray = (*inv_matrix)(ray);
 
-	if (object_ptr->hitted_by(inv_ray, t))
+	if (object_ptr->hitted_by(ray, t, u, v))
 	{
 		// if no material is specified when the object is created, then the instance of this
 		// object can have different materials
@@ -39,9 +39,9 @@ bool Instance::hitted_by(const Ray& ray, float& t, Ray& inv_ray) const
 }
 
 __device__
-normal3 Instance::compute_normal(const point3& p) const
+normal3 Instance::compute_normal(const point3& p, const float& u, const float& v) const
 {
-	normal3 normal = object_ptr->compute_normal_at(p);		// compute the normal at the untransformed object
-	normal = (*inv_matrix)(normal);							// transpose of the inverse matrix
+	normal3 normal = object_ptr->compute_normal_at(p, u, v);		// compute the normal at the untransformed object
+	//normal = (*inv_matrix)(normal);							    // transpose of the inverse matrix
 	return normalize(normal);
 }

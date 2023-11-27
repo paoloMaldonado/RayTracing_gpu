@@ -19,9 +19,9 @@ public:
 	Sphere(const point3& c, const float& r) : center(c), radius(r)
 	{}
 	__device__ 
-	virtual bool hitted_by(const Ray& ray, float& t) const override;
-	__device__ 
-	virtual normal3 compute_normal_at(const point3& p) const override 
+	virtual bool hitted_by(const Ray& ray, float& t, float& u, float& v) const override;
+	__device__
+	virtual normal3 compute_normal_at(const point3& p, const float& u = 0.0f, const float& v = 0.0f) const override
 	{ 
 		vec3 n = (p - center)/radius;
 		return normal3(n.x, n.y, n.z);

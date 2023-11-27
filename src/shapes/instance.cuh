@@ -26,9 +26,9 @@ public:
 	Instance(Shape* object_ptr, const Transform* transform, Material* material);
 
 	__device__
-	bool hitted_by(const Ray& ray, float& t, Ray& inv_ray) const;
+	bool hitted_by(const Ray& ray, float& t, Ray& inv_ray, float& u, float& v) const;
 	__device__
-	normal3 compute_normal(const point3& p) const;
+	normal3 compute_normal(const point3& p, const float& u = 0.0f, const float& v = 0.0f) const;
 };
 
 

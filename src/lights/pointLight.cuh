@@ -21,7 +21,7 @@ public:
 
 		normal3 n = rec.n; 
 		n = dot(n, rec.wo) < 0.0f ? -n : n;
-		n = n * 0.00001f;
+		n = n * 0.01f;
 
 		Ray shadow_ray = Ray(p + n.to_vec3(), wi);
 		in_shadow = visibility.test_shadow(shadow_ray);

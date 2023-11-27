@@ -1,7 +1,7 @@
 #include "sphere.cuh"
 
 __device__ 
-bool Sphere::hitted_by(const Ray& ray, float& t) const
+bool Sphere::hitted_by(const Ray& ray, float& t, float& u, float& v) const
 {
 	// discriminant = B^-4AC
 	vec3 oc = ray.origin - center;

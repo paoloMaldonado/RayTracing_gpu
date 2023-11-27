@@ -14,12 +14,14 @@ void callRayTracingKernel(
     Instance** object_list,
     unsigned int N,
     Camera camera,
-    point3 point_light,
+    point3 point_light_1,
+    point3 point_light_2,
+    int depth,
     const int width,
     const int height);
 
 __device__
-Spectrum specularBounces(const SurfaceInteraction& isect, const int maxDepth, Instance** scene, const int& N, PointLight light, MemoryManager& memory);
+Spectrum specularBounces(const SurfaceInteraction& isect, const int maxDepth, Instance** scene, const int& N, PointLight light, MemoryManager& memory, const int& offset);
 __device__
 Spectrum specularReflect(Ray& ray, SurfaceInteraction& isect, Instance** scene, const int& N, PointLight light, MemoryManager& memory);
 __device__

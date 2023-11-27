@@ -6,9 +6,10 @@
 #include <iostream>
 
 __global__
-void render(float4* pixel, Instance** object_list, unsigned int N, Camera camera, point3 point_light, const int width, const int height)
+void render(float4* pixel, Instance** object_list, unsigned int N, Camera camera, point3 point_light_1, point3 point_light_2, int depth, 
+            const int width, const int height)
 {
-    int maxDepth = 3;
+    //int maxDepth = 3;
 
     // map from threadIdx/BlockIdx to pixel position
     int x = threadIdx.x + blockIdx.x * blockDim.x;
@@ -26,31 +27,44 @@ void render(float4* pixel, Instance** object_list, unsigned int N, Camera camera
     SurfaceInteraction rec;
     bool hit = intersection(ray, object_list, N, rec);
 
-    pixel[offset] = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
+    //primary_rays[offset] += 1;
 
+    Spectrum color(0.0f);
+    pixel[offset] = make_float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    // preallocate a buffer for placement new -> faster than dynamic allocation 
+    
+    MemoryManager memory;
     if (hit) // if there is an intersection
     {
-        // preallocate a buffer for placement new -> faster than dynamic allocation 
-        MemoryManager memory;
         rec.compute_scattering_functions(memory);
 
-        vec3 wi;
-        bool in_shadow;
-        VisibilityTester visibility(object_list, N);
+        PointLight light1(point_light_1);
+        PointLight light2(point_light_2);
 
-        PointLight light(point_light);
-        Spectrum I = light.sample_li(rec, visibility, wi, in_shadow);
+        PointLight lights[2] = {light1, light2};
 
-        Spectrum color = shade(rec, wi, in_shadow);   // for more than 1 ls -> color += shade() and inside for loop
+        for (int i = 0; i < 2; ++i)
+        {
+            vec3 wi;
+            bool in_shadow;
+            VisibilityTester visibility(object_list, N);
 
-        // trace rays for specular reflection and refraction
-        ray.direction = rec.wo;
-        //for (int i = 0; i < maxDepth - 1; ++i)
-        //{
-        //    //color += specularReflect(ray, rec, object_list, N, light, memory);
-        //    color += specularRefract(ray, rec, object_list, N, light, memory);
-        //}
-        color += specularBounces(rec, maxDepth, object_list, N, light, memory);
+            Spectrum I = lights[i].sample_li(rec, visibility, wi, in_shadow);
+
+            //primary_rays[offset] += 1;
+
+            color += shade(rec, wi, in_shadow);   // for more than 1 ls -> color += shade() and inside for loop
+
+            // trace rays for specular reflection and refraction
+            ray.direction = rec.wo;
+            //for (int i = 0; i < maxDepth - 1; ++i)
+            //{
+            //    //color += specularReflect(ray, rec, object_list, N, light, memory);
+            //    color += specularRefract(ray, rec, object_list, N, light, memory);
+            //}
+            color += specularBounces(rec, depth, object_list, N, lights[i], memory, offset);
+        }
 
         pixel[offset] = make_float4(color.x, color.y, color.z, 1.0f);
     }    
@@ -61,18 +75,20 @@ void callRayTracingKernel(
     Instance** object_list,
     unsigned int N,
     Camera camera,
-    point3 point_light,
+    point3 point_light_1,
+    point3 point_light_2,
+    int depth,
     const int width,
     const int height)
 {
     dim3 thread_block(8, 8, 1);
     dim3 grid(width / thread_block.x, height / thread_block.y, 1);
-    render<<< grid, thread_block >>>(d_pixel, object_list, N, camera, point_light, width, height);
+    render<<< grid, thread_block >>>(d_pixel, object_list, N, camera, point_light_1, point_light_2, depth, width, height);
     cudaDeviceSynchronize();
 }
 
 __device__
-Spectrum specularBounces(const SurfaceInteraction& isect, const int maxDepth, Instance** scene, const int& N, PointLight light, MemoryManager& memory)
+Spectrum specularBounces(const SurfaceInteraction& isect, const int maxDepth, Instance** scene, const int& N, PointLight light, MemoryManager& memory, const int& offset)
 {
     const int refraction_rays = (powf(2, maxDepth) - 2) / 2;
 
@@ -117,6 +133,8 @@ Spectrum specularBounces(const SurfaceInteraction& isect, const int maxDepth, In
         {
             SurfaceInteraction isect;
             bool hit = intersection(ray, scene, N, isect);
+
+            //secondary_rays[offset] += 1;
 
             if (hit) // if there is an intersection
             {

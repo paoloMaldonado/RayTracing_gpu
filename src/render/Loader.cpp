@@ -44,6 +44,7 @@ Loader::Loader(std::string inputfile, std::string materialpath)
                 // access to vertex
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v]; // idx has vertex/texture/normal e.g 1//2 
                 indices.push_back(idx.vertex_index);
+                indices_normal.push_back(idx.normal_index);
             }
             index_offset += fv;
             face_size++;
@@ -73,5 +74,15 @@ Loader::Loader(std::string inputfile, std::string materialpath)
         float y = attrib.vertices[v + 1];
         float z = attrib.vertices[v + 2];
         vertices.push_back(point3(x, y, z));
+    }
+
+    // Getting the vertex normals as a vector of normal3
+    size_t num_vertex_normals = attrib.normals.size();
+    for (size_t n = 0; n < num_vertex_normals; n += 3)
+    {
+        float x = attrib.normals[n + 0];
+        float y = attrib.normals[n + 1];
+        float z = attrib.normals[n + 2];
+        normals.push_back(normal3(x, y, z));
     }
 }

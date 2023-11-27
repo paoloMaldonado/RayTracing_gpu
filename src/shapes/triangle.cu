@@ -17,21 +17,27 @@
 //}
 
 __device__
-TriangleMesh::TriangleMesh(const int& nTriangles, const int* vIndices, point3* P) :
+TriangleMesh::TriangleMesh(const int& nTriangles, const int* vIndices, const int* nIndices, point3* P, normal3* N) :
 	nTriangles(nTriangles)
 {
 	vertexIndices = new int[nTriangles * 3];
+	normalIndices = new int[nTriangles * 3];
 
 	for (int i = 0; i < 3 * nTriangles; ++i)
+	{
 		vertexIndices[i] = vIndices[i];
+		normalIndices[i] = nIndices[i];
+	}
 
-	p = P;
+	p = P; // changing ownerwhip of the pointer, P and N are already allocated arrays on global memory
+	n = N;
 }
 
 __device__
 TriangleMesh::~TriangleMesh()
 {
 	delete[] vertexIndices;
+	delete[] normalIndices;
 	//delete[] p;
 }
 
@@ -42,6 +48,11 @@ Triangle::Triangle(TriangleMesh* mesh, const int& triNumber) : mesh(mesh)
 	v1 = mesh->vertexIndices[3 * triNumber];
 	v2 = mesh->vertexIndices[3 * triNumber + 1];
 	v3 = mesh->vertexIndices[3 * triNumber + 2];
+
+	// indices of the vertex normal
+	n1 = mesh->normalIndices[3 * triNumber];
+	n2 = mesh->normalIndices[3 * triNumber + 1];
+	n3 = mesh->normalIndices[3 * triNumber + 2];
 }
 
 __device__
@@ -56,14 +67,12 @@ Triangle::~Triangle()
 }
 
 __device__
-bool Triangle::hitted_by(const Ray& ray, float& t) const
+bool Triangle::hitted_by(const Ray& ray, float& t, float& u, float& v) const
 {
 	// access to the elements v1, v2, v3 in the array of points p
-	point3 vert0 = mesh->p[v1];   
+	point3 vert0 = mesh->p[v1];
 	point3 vert1 = mesh->p[v2];
 	point3 vert2 = mesh->p[v3];
-
-	float u, v;
 
 	vec3 edge1, edge2, tvec, pvec, qvec;
 	float det, inv_det;
@@ -98,31 +107,44 @@ bool Triangle::hitted_by(const Ray& ray, float& t) const
 
 	// calculate t, ray intersects triangle
 	t = dot(edge2, qvec) * inv_det;
-	
+
 	return (t > 0.0f) ? true : false;
 }
 
 __device__
-normal3 Triangle::compute_normal_at(const point3& p) const
+normal3 Triangle::compute_normal_at(const point3& p, const float& u, const float& v) const
 {
 	// access to the elements v1, v2, v3 in the array of points p
 	point3 vert0 = mesh->p[v1];
 	point3 vert1 = mesh->p[v2];
 	point3 vert2 = mesh->p[v3];
 
-	vec3 edge1, edge2;
-	edge1 = vert1 - vert0;
-	edge2 = vert2 - vert0;
+	if (mesh->n == nullptr)
+	{
+		vec3 edge1, edge2;
+		edge1 = vert1 - vert0;
+		edge2 = vert2 - vert0;
 
-	return normal3(normalize(cross(edge2, edge1)));
+		return normal3(normalize(cross(edge2, edge1)));
+	}
+
+	// access to the normal vertices of the triangle
+	normal3 norm0 = mesh->n[n1];
+	normal3 norm1 = mesh->n[n2];
+	normal3 norm2 = mesh->n[n3];
+
+	// normal interpolation according to Phong shading -> interpolate the normals with the u v coordinates
+	return norm1 * u +
+		   norm2 * v +
+		   norm0 * (1 - u - v);
 }
 
 __device__
-Shape** createTriangleMeshShape(const int& nTriangles, int* d_vIndices, point3* d_P)
+Shape** createTriangleMeshShape(const int& nTriangles, int* d_vIndices, int* d_nIndices, point3* d_P, normal3* d_N)
 {
 	Shape** d_triangles = new Shape*[nTriangles];
 
-	TriangleMesh* mesh = new TriangleMesh(nTriangles, d_vIndices, d_P);
+	TriangleMesh* mesh = new TriangleMesh(nTriangles, d_vIndices, d_nIndices, d_P, d_N);
 	for (int i = 0; i < nTriangles; ++i)
 	{
 		d_triangles[i] = new Triangle(mesh, i);

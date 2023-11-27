@@ -35,12 +35,19 @@ float speed = 1.0f;
 int main()
 {
     const float aspect_ratio = 16.0f / 9.0f;
-    const int SCR_WIDTH = 800;
+    const int SCR_WIDTH = 1600;
     const int SCR_HEIGHT = static_cast<int>(SCR_WIDTH / aspect_ratio);
+
+    std::cout << "Resolution: " << "\n"<<"\t"<<SCR_WIDTH<<" x "<<SCR_HEIGHT<<"\n";
 
     // set 1.0f to be in front of the shapes (smaller projection), values > 1.0f set the view plane behind the shapes (bigger projection)
     // this phenomenom is due to the center of projection being located at the camera origin (and also because perspective projection works like that)
-    Camera camera(point3(0.0f, 0.0f, 1.0f), 3.0f); 
+    Camera camera(point3(3.271f, 0.700f, 2.614f), 3.0f);   // 0.012f, 0.700f, 3.043f
+
+    // For cornellBoxOriginal -> 3.271f, 0.700f, 2.614f
+    // For CornellBoxSphere   -> 0.012f, 0.700f, 3.043f
+    // For bunny              -> -0.294f, 1.0f, 2.609f
+    // For teapot             -> -0.041f, 1.7f, 8.097f
 
     WindowHandler window_handler(SCR_WIDTH, SCR_HEIGHT, "raytracing");
     window_handler.mark_as_current_context();
@@ -93,58 +100,45 @@ int main()
 
     // Graphics settings
 
-    point3 light(8.5f, 5.5f, 10.0f);
+    //point3 light1(8.5f, 5.5f, 10.0f);
+    //point3 light2(-8.5f, 5.5f, 10.0f);
 
-    //Colors
-    //vec3 RED = vec3(1.0f, 0.0f, 0.0f);
-    //vec3 GREEN = vec3(0.0f, 1.0f, 0.0f);
-    //vec3 BLUE = vec3(0.0f, 0.0f, 1.0f);
-    //vec3 BLACK = vec3(0.0f, 0.0f, 0.0f);
-
-    //Material mat1(RED, vec3(0.5f, 0.5, 0.5f), 200.0f);
-    //Material mat2(GREEN, vec3(0.5f, 0.5, 0.5f), 200.0f);
-    //Material mat3(BLACK, vec3(0.5f, 0.5, 0.5f), 200.0f);
-
-    //Sphere object_1(vec3(0.0f, 0.0f, -1.0f), 0.5f, mat1);
-    //Sphere object_2(vec3(-1.0f, 0.0f, -1.0f), 0.5f, mat2);
-    //Sphere object_3(vec3(1.0f, 0.0f, -1.0f), 0.5f, mat3);
-    //Sphere object_4(vec3(0.0f, -100.5f, -1.0f), 100.0f, mat2);
-
-    //std::vector<Sphere> spheres = {object_1, object_2, object_3, object_4};
+    point3 light1(-0.3f, 0.8f, 1.8f);
+    point3 light2(0.6f, 5.9f, 9.3f);
 
     //instantiate 4 spheres on GPU
-    Scene scene(12,              // number of primitives (Does not have effect if load_to_gpu() is used)
-                5);              // number of materials to allocate
-
-    //auto indices = loader.Indices();
-
-    //std::cout << "size Host: " << loader.Indices().size() << "\n";
-
-    //for (auto& i : loader.N_triangles_per_shape())
-    //{
-    //    std::cout << i << " ";
-    //}
-
-    //std::cout << "\n";
-
-    //int index_ith = 0;
-    //for (size_t i = 0; i < loader.N_triangles_per_shape().size(); i++)
-    //{
-    //    for (size_t f = 0; f < loader.N_triangles_per_shape().at(i) * 3; f++)
-    //    {
-    //        std::cout << loader.Indices().at(index_ith) << " ";
-    //        index_ith++;
-    //    }
-    //    std::cout << "\n";
-    //}
+    Scene scene(4,              // number of primitives (Does not have effect if load_to_gpu() is used)
+                4);             // number of materials to allocate
 
     scene.load_obj_to_gpu("objects/CornellBox-Original.obj", "objects");
     scene.build();
 
+    // set number of bounces
+    int depth = 1;
 
+    ////////////////////////////////////////////////////////
+    // for calculating number of rays
+    //int* primary_rays;
+    //int* secondary_rays;
+
+    //int N = SCR_WIDTH * SCR_HEIGHT;
+    //cudaMallocManaged(&primary_rays, N * sizeof(int));
+    //cudaMallocManaged(&secondary_rays, N * 7 * sizeof(int));
+
+    //for (int i = 0; i < N; i++) { primary_rays[i] = 0; }
+    //for (int i = 0; i < N*7; i++) { secondary_rays[i] = 0; }
+    //
+    //int primary_total = 0;
+    //int secondary_total = 0;
+    ////////////////////////////////////////////////////////
+     
+   
     // render loop
     while (!glfwWindowShouldClose(window_handler.window))
     {
+        //for (int i = 0; i < N; i++) { primary_rays[i] = 0; }
+        //for (int i = 0; i < N*7; i++) { secondary_rays[i] = 0; }
+
         // compute delta time 
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -162,7 +156,7 @@ int main()
         //float4* dptr = graphicsResource.mapAndReturnDevicePointer();
 
         // launch kernel
-        callRayTracingKernel(dptr, scene.get_pointer_to_instances(), scene.number_of_primitives(), camera, light, SCR_WIDTH, SCR_HEIGHT);
+        callRayTracingKernel(dptr, scene.get_pointer_to_instances(), scene.number_of_primitives(), camera, light1, light2, depth, SCR_WIDTH, SCR_HEIGHT);
 
         cudaGraphicsUnmapResources(1, &tex_data_resource, 0);
         //graphicsResource.unmap();
@@ -178,10 +172,10 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowPerfomanceMetrics();
-
         if(showWindow)
         {
+            ImGui::ShowPerfomanceMetrics();
+
             ImGui::Begin("Camera");
             ImGui::DragFloat3("Front", camera.front.value_ptr(), 0.1f, -10.0f, 10.0f);
             ImGui::DragFloat3("Position", camera.e.value_ptr(), 0.1f, -10.0f, 10.0f);
@@ -189,8 +183,16 @@ int main()
             ImGui::DragFloat("Pitch angle", &camera.pitch, 0.1f, -90.0f, 90.0f);
             ImGui::End();
 
-            ImGui::Begin("Light");
-            ImGui::DragFloat3("Position", light.value_ptr(), 0.1f, -10.0f, 10.0f);
+            ImGui::Begin("1st Light");
+            ImGui::DragFloat3("Position", light1.value_ptr(), 0.1f, -20.0f, 20.0f);
+            ImGui::End();
+
+            ImGui::Begin("2nd Light");
+            ImGui::DragFloat3("Position", light2.value_ptr(), 0.1f, -20.0f, 20.0f);
+            ImGui::End();
+
+            ImGui::Begin("Bounces");
+            ImGui::InputInt("Bounces", &depth);
             ImGui::End();
         }
 
@@ -200,6 +202,11 @@ int main()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window_handler.window);
+
+        //primary_total = 0;
+        //secondary_total = 0;
+        //for (int i = 0; i < N; i++) { primary_total += primary_rays[i]; }
+        //for (int i = 0; i < N*7; i++) { secondary_total += secondary_rays[i]; }
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -207,6 +214,12 @@ int main()
     ImGui::DestroyContext();
 
     scene.destroy();
+
+    //std::cout << "Number of traced primary rays: " << "\n" << "\t" << primary_total << "\n";
+    //std::cout << "Number of traced secondary rays: " << "\n" << "\t" << secondary_total << "\n";
+
+    //cudaFree(primary_rays);
+    //cudaFree(secondary_rays);
 }
 
 

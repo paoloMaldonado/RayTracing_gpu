@@ -21,6 +21,7 @@ void showOBJ(int* indices, point3* vertices, MatParam* material_params, int* off
     //    printf("%f ", vertices[i].z);
     //    printf("\n");
     //}
+    printf("%f ", vertices[0].x);
 
     printf("%f ", material_params[0].Kd[0]);
     printf("%f ", material_params[0].Kd[1]);
@@ -56,7 +57,8 @@ private:
 
 
 __device__
-Shape** makeShapes(const char* name, const unsigned int nPrimitives, int* indices, point3* vertices)
+Shape** makeShapes(const char* name, const unsigned int nPrimitives, int* indices, int* indices_normal, 
+                   point3* vertices, normal3* normals)
 {
     Shape** prims = new Shape*[nPrimitives];
     Shape* s = nullptr;
@@ -84,7 +86,7 @@ Shape** makeShapes(const char* name, const unsigned int nPrimitives, int* indice
         //                       point3(1.0f,  1.0f,  0.0f),
         //                       point3(1.0f,  1.0f,  1.0f) };
 
-        Shape** multi_s = createTriangleMeshShape(nPrimitives, indices, vertices);
+        Shape** multi_s = createTriangleMeshShape(nPrimitives, indices, indices_normal, vertices, normals);
 
         for (int i = 0; i < nPrimitives; ++i)
         {
@@ -112,8 +114,13 @@ Material* makeMaterial(const MatParam& material_parameters)
         break;
     case MaterialType::GLASS:
         material = new GlassMaterial(material_parameters.Ks, 
-                                     Spectrum(0.0f), 
+                                     Spectrum(1.0f), 
                                      1.5f);
+        break;
+    case MaterialType::PLASTIC:
+        material = new PlasticMaterial(material_parameters.Kd,
+                                       material_parameters.Ks,
+                                       material_parameters.shininess);
         break;
     default:
         break;
@@ -127,19 +134,22 @@ void makeTransforms(Transform** transforms, unsigned int nTransforms)
 {
     // read from left to right because these are inverse matrices
     Transform* center = new Transform(scaling(0.5f, 0.5f, 0.5f) * translate(vec3(0.0f, 0.0f, -1.0f)));
+    Transform* right = new Transform(scaling(0.5f, 0.5f, 0.5f) * translate(vec3(1.0f, 0.0f, -1.0f)));
     Transform* left   = new Transform(scaling(0.5f, 0.5f, 0.5f) * translate(vec3(-1.0f, 0.0f, -1.0f)));
-    Transform* right  = new Transform(scaling(0.5f, 0.5f, 0.5f) * translate(vec3(1.0f, 0.0f, -1.0f)));
-    //Transform floor   = scaling(100.0f, 100.0f, 100.0f) * translate(vec3(0.0f, -100.5f, -1.0f));
+    Transform* floor  = new Transform(scaling(100.0f, 100.0f, 100.0f) * translate(vec3(0.0f, -100.5f, -1.0f)));
+    Transform* cornell = new Transform(scaling(1.0f, 1.0f, 1.0f));
 
     transforms[0] = center;
-    transforms[1] = left;
-    transforms[2] = right;
+    transforms[1] = right;
+    transforms[2] = left;
+    transforms[3] = floor;
+    transforms[4] = cornell;
 }
 
 __global__
-void create_scene(Instance** instances, Material** materials, MatParam* material_params,  Transform** transforms, 
-    const int nPrimitives, int* indices = nullptr, point3* vertices = nullptr, int* triangles_per_shape = nullptr, 
-    int nObjectsInMesh = 1)
+void create_scene(Instance** instances, Material** materials, MatParam* material_params, Transform** transforms, 
+    const int nPrimitives, int* indices = nullptr, int* indices_normal = nullptr, point3* vertices = nullptr,
+    normal3* normals = nullptr, int* triangles_per_shape = nullptr, int nObjectsInMesh = 1)
 {
     Instance_stack list;
 
@@ -150,17 +160,43 @@ void create_scene(Instance** instances, Material** materials, MatParam* material
     {
         int indices_in_shape = triangles_per_shape[p] * 3;
         int* indices_offset = new int[indices_in_shape];
+        int* indices_normal_offset = new int[indices_in_shape];
+
         memcpy(indices_offset, &indices[srcIdx], indices_in_shape * sizeof(int));   // copy from the index srcIdx (slicing)
+        memcpy(indices_normal_offset, &indices_normal[srcIdx], indices_in_shape * sizeof(int));
 
         // instantiate each shape
-        shapes = makeShapes("trianglemesh", triangles_per_shape[p], indices_offset, vertices);
+        shapes = makeShapes("trianglemesh", triangles_per_shape[p], indices_offset, indices_normal_offset, vertices, normals);
         // instantiate each material for the shape with index p (Assuming each shape has its own material)
         materials[p] = makeMaterial(material_params[p]);
         // pushing shapes and corresponding materials to the list and populate the device pointer 'instances' necesary for rendering
-        list.push_back(instances, shapes, transforms[0], materials[p], triangles_per_shape[p]);
+        list.push_back(instances, shapes, transforms[4], materials[p], triangles_per_shape[p]);
 
         srcIdx = srcIdx + indices_in_shape;  // srcIdx + triangles_per_shape[p] * 3
         delete[] indices_offset;
+        delete[] indices_normal_offset;
+    }
+}
+
+__global__
+void create_demo_scene(Instance** instances, Material** materials, Transform** transforms,
+    const int nPrimitives)
+{
+    Instance_stack list;
+
+    Shape** shapes = nullptr;
+
+    materials[0] = new MatteMaterial(Spectrum(0.0f, 0.0f, 1.0f));  // blue (center)
+    materials[1] = new GlassMaterial(Spectrum(1.0f), Spectrum(0.0f), 1.5f);  // color (right)
+    materials[2] = new MirrorMaterial(Spectrum(1.0f));  // white (left)
+    materials[3] = new MatteMaterial(Spectrum(0.0f, 1.0f, 0.0f));  // green (floor)
+
+    for (size_t p = 0; p < nPrimitives; ++p)
+    {
+        // instantiate each shape
+        shapes = makeShapes("sphere", 1);
+        // pushing shapes and corresponding materials to the list and populate the device pointer 'instances' necesary for rendering
+        list.push_back(instances, shapes, transforms[p], materials[p], 1);  // 1 because a sphere is a single primitive
     }
 }
 
@@ -198,7 +234,9 @@ Scene::Scene(const unsigned int& nPrimitives, const unsigned int& nMaterials)
     : nPrimitives(nPrimitives), nMaterials(nMaterials)
 {
     d_indices             = nullptr;
+    d_indices_normal      = nullptr;
     d_vertices            = nullptr;
+    d_normals             = nullptr;
     d_triangles_per_shape = nullptr;
     nObjectsInMesh        = 1;
 }
@@ -206,7 +244,9 @@ Scene::Scene(const unsigned int& nPrimitives, const unsigned int& nMaterials)
 Scene::Scene(const unsigned int& nMaterials) : nPrimitives(0), nMaterials(nMaterials)
 {
     d_indices = nullptr;
+    d_indices_normal = nullptr;
     d_vertices = nullptr;
+    d_normals = nullptr;
     d_triangles_per_shape = nullptr;
     nObjectsInMesh = 1;
 }
@@ -220,10 +260,20 @@ void Scene::load_obj_to_gpu(std::string inputfile, std::string materialpath)
     cudaMalloc(&d_indices, sizeof(int) * size_indices);
     cudaMemcpy(d_indices, obj_loader.Indices().data(), sizeof(int) * size_indices, cudaMemcpyHostToDevice);
 
+    // Allocating normal indices on gpu
+    int size_indices_normal = obj_loader.Indices_normal().size();
+    cudaMalloc(&d_indices_normal, sizeof(int) * size_indices_normal);
+    cudaMemcpy(d_indices_normal, obj_loader.Indices_normal().data(), sizeof(int) * size_indices_normal, cudaMemcpyHostToDevice);
+
     // Allocating vertices on gpu
     int size_vertices = obj_loader.Vertices().size();
     cudaMalloc(&d_vertices, sizeof(point3) * size_vertices);
     cudaMemcpy(d_vertices, obj_loader.Vertices().data(), sizeof(point3) * size_vertices, cudaMemcpyHostToDevice);
+
+    // Allocating vertex normals on gpu
+    int size_normals = obj_loader.Normals().size();
+    cudaMalloc(&d_normals, sizeof(normal3) * size_normals);
+    cudaMemcpy(d_normals, obj_loader.Normals().data(), sizeof(normal3) * size_normals, cudaMemcpyHostToDevice);
 
     // Allocating faces_offset_indices on gpu
     nObjectsInMesh = obj_loader.shapes_number();
@@ -231,28 +281,35 @@ void Scene::load_obj_to_gpu(std::string inputfile, std::string materialpath)
     cudaMemcpy(d_triangles_per_shape, obj_loader.N_triangles_per_shape().data(), sizeof(int) * nObjectsInMesh, cudaMemcpyHostToDevice);
 
     // Allocating space for material parameters on gpu
-    int nMaterials = obj_loader.MaterialParams().size();
+    nMaterials = obj_loader.MaterialParams().size();
     cudaMalloc(&d_material_params, sizeof(MatParam) * nMaterials);
     cudaMemcpy(d_material_params, obj_loader.MaterialParams().data(), sizeof(MatParam) * nMaterials, cudaMemcpyHostToDevice);
 
     nPrimitives = obj_loader.TotalTriangles();
 
+    std::cout << "Scene description:\n";
+    std::cout << "\ttriangles: " << nPrimitives << "\n";
+    std::cout << "\tvertices: "  << size_vertices << "\n";
+    std::cout << "\tnormals: " << size_normals << "\n";
     //showOBJ<<<1, 1>>>(d_indices, d_vertices, d_material_params, d_triangles_per_shape, size_indices, size_vertices, nObjectsInMesh);
 }
 
-void Scene::build()
+void Scene::build(bool demo)
 {
-	//cudaMalloc(&d_shapes, nPrimitives * sizeof(Shape*));
     cudaMalloc(&d_instances, nPrimitives * sizeof(Instance*));
     cudaMalloc(&d_materials, nMaterials * sizeof(Material*));
-    cudaMalloc(&d_transforms, 3 * sizeof(Transform*));
+    cudaMalloc(&d_transforms, 5 * sizeof(Transform*));
 
     makeTransforms<<<1, 1 >>>(d_transforms, 3);
     cudaDeviceSynchronize();
     
-	create_scene<<<1, 1>>>(d_instances, d_materials, d_material_params, d_transforms, 
-                            nPrimitives, d_indices, d_vertices, d_triangles_per_shape, 
-                            nObjectsInMesh);
+    if(!demo)
+	    create_scene<<<1, 1>>>(d_instances, d_materials, d_material_params, d_transforms, 
+                                nPrimitives, d_indices, d_indices_normal, d_vertices, d_normals, d_triangles_per_shape, 
+                                nObjectsInMesh);
+    else
+        create_demo_scene<<<1, 1>>>(d_instances, d_materials, d_transforms,
+                                    nPrimitives);
     cudaDeviceSynchronize();
 }
 
@@ -266,7 +323,9 @@ void Scene::destroy()
 
     // OBJ to GPU
     cudaFree(d_indices);
+    cudaFree(d_indices_normal);
     cudaFree(d_vertices);
+    cudaFree(d_normals);
     cudaFree(d_triangles_per_shape);
 }
 

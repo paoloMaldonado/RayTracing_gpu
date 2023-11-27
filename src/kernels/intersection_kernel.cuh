@@ -10,10 +10,11 @@ inline bool intersection(const Ray& ray, Instance** object_list, const unsigned 
 	bool hit = false;
 	float t_0;
 
+	float u = 0.0f, v = 0.0f;
 	for (unsigned int i = 0; i < N; i++)
 	{
 		Ray inv_ray;
-		if (object_list[i]->hitted_by(ray, t_0, inv_ray))
+		if (object_list[i]->hitted_by(ray, t_0, inv_ray, u, v))
 		{
 			if (t_0 < rec.t)
 			{
@@ -28,8 +29,9 @@ inline bool intersection(const Ray& ray, Instance** object_list, const unsigned 
 				// intersected primitive
 				rec.hitobject = object_list[i]->object_ptr->get_shape();   // hitobject will live as long as shape lives (both holds the same address)
 				// normal at intersection point (transformed normal)
-				point3 p_at_untransformed = inv_ray.point_at_parameter(t_0);
-				rec.n         = object_list[i]->compute_normal(p_at_untransformed);
+				//point3 p_at_untransformed = inv_ray.point_at_parameter(t_0);
+				point3 p_at_untransformed = ray.point_at_parameter(t_0);
+				rec.n         = object_list[i]->compute_normal(p_at_untransformed, u, v);
 			}
 		}
 	}
@@ -40,11 +42,12 @@ __device__
 inline bool intersectionShadow(const Ray& ray, Instance** object_list, const unsigned int N)
 {
 	float t_0;
+	float u = 0.0f, v = 0.0f;
 
 	for (unsigned int i = 0; i < N; i++)
 	{
 		Ray inv_ray;
-		if (object_list[i]->hitted_by(ray, t_0, inv_ray))
+		if (object_list[i]->hitted_by(ray, t_0, inv_ray, u, v))
 		{
 			return true;
 		}
