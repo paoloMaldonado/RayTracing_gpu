@@ -190,11 +190,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\GLFW\lib\glfw3.pdb" />
-    <None Include="objects\bunny.mtl" />
-    <None Include="objects\CornellBox-Original.mtl" />
-    <None Include="objects\CornellBox-Sphere.mtl" />
-    <None Include="objects\gourd.mtl" />
-    <None Include="objects\teapot.mtl" />
     <None Include="README.md" />
     <None Include="shaders\fragment_shader.frag" />
     <None Include="shaders\vertex_shader.vert" />
@@ -268,13 +263,6 @@
   <ItemGroup>
     <CudaCompile Include="src\cudaRaytracing.cu" />
     <CudaCompile Include="src\shapes\sphere.cu" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="objects\bunny.obj" />
-    <Object Include="objects\CornellBox-Original.obj" />
-    <Object Include="objects\CornellBox-Sphere.obj" />
-    <Object Include="objects\gourd.obj" />
-    <Object Include="objects\teapot.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
