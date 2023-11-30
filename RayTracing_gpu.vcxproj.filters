@@ -104,7 +104,7 @@
     <ClCompile Include="Common\glad\src\glad.c">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\tiny_obj_loader.cc">
+    <ClCompile Include="common\tiny_obj_loader\tiny_obj_loader.cc">
       <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="src\render\Loader.cpp">
@@ -125,6 +125,11 @@
     <None Include="Common\GLFW\lib\glfw3.pdb">
       <Filter>common</Filter>
     </None>
+    <None Include="objects\bunny.mtl" />
+    <None Include="objects\CornellBox-Original.mtl" />
+    <None Include="objects\CornellBox-Sphere.mtl" />
+    <None Include="objects\gourd.mtl" />
+    <None Include="objects\teapot.mtl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\imgui\imconfig.h">
@@ -205,7 +210,7 @@
     <ClInclude Include="src\lights\pointLight.cuh">
       <Filter>lights</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\tiny_obj_loader.h">
+    <ClInclude Include="common\tiny_obj_loader\tiny_obj_loader.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\render\Loader.h">
@@ -329,5 +334,12 @@
     <Library Include="Common\GLFW\lib\glfw3.lib">
       <Filter>common</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="objects\bunny.obj" />
+    <Object Include="objects\CornellBox-Original.obj" />
+    <Object Include="objects\CornellBox-Sphere.obj" />
+    <Object Include="objects\gourd.obj" />
+    <Object Include="objects\teapot.obj" />
   </ItemGroup>
 </Project>

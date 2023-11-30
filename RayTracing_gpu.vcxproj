@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)common\glad\include;$(SolutionDir)common\glad\src;$(SolutionDir)common\GLFW\include;$(SolutionDir)common\imgui;$(SolutionDir)common\shader\include;$(SolutionDir)common\shader\src;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common\glad\include;$(SolutionDir)common\glad\src;$(SolutionDir)common\GLFW\include;$(SolutionDir)common\imgui;$(SolutionDir)common\shader\include;$(SolutionDir)common\shader\src;$(SolutionDir)src;$(SolutionDir)common\tiny_obj_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,7 +143,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)common\glad\include;$(SolutionDir)common\glad\src;$(SolutionDir)common\GLFW\include;$(SolutionDir)common\imgui;$(SolutionDir)common\shader\include;$(SolutionDir)common\shader\src;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common\glad\include;$(SolutionDir)common\glad\src;$(SolutionDir)common\GLFW\include;$(SolutionDir)common\imgui;$(SolutionDir)common\shader\include;$(SolutionDir)common\shader\src;$(SolutionDir)src;$(SolutionDir)common\tiny_obj_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -180,7 +180,7 @@
     <ClCompile Include="src\render\Loader.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>
-    <ClCompile Include="src\render\tiny_obj_loader.cc" />
+    <ClCompile Include="common\tiny_obj_loader\tiny_obj_loader.cc" />
     <ClCompile Include="src\render\WindowHandler.cpp" />
     <CudaCompile Include="src\core\shape.cu" />
     <CudaCompile Include="src\core\reflection.cu" />
@@ -190,6 +190,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\GLFW\lib\glfw3.pdb" />
+    <None Include="objects\bunny.mtl" />
+    <None Include="objects\CornellBox-Original.mtl" />
+    <None Include="objects\CornellBox-Sphere.mtl" />
+    <None Include="objects\gourd.mtl" />
+    <None Include="objects\teapot.mtl" />
     <None Include="README.md" />
     <None Include="shaders\fragment_shader.frag" />
     <None Include="shaders\vertex_shader.vert" />
@@ -235,7 +240,7 @@
     <CudaCompile Include="src\shapes\instance.cuh" />
     <CudaCompile Include="src\shapes\triangle.cuh" />
     <ClInclude Include="src\render\Loader.h" />
-    <ClInclude Include="src\render\tiny_obj_loader.h" />
+    <ClInclude Include="common\tiny_obj_loader\tiny_obj_loader.h" />
     <ClInclude Include="src\utility\Utils.h" />
     <CudaCompile Include="src\cudaRaytracing.cuh" />
     <ClInclude Include="src\input\MouseInput.h" />
@@ -263,6 +268,13 @@
   <ItemGroup>
     <CudaCompile Include="src\cudaRaytracing.cu" />
     <CudaCompile Include="src\shapes\sphere.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="objects\bunny.obj" />
+    <Object Include="objects\CornellBox-Original.obj" />
+    <Object Include="objects\CornellBox-Sphere.obj" />
+    <Object Include="objects\gourd.obj" />
+    <Object Include="objects\teapot.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

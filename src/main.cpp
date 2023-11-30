@@ -42,7 +42,7 @@ int main()
 
     // set 1.0f to be in front of the shapes (smaller projection), values > 1.0f set the view plane behind the shapes (bigger projection)
     // this phenomenom is due to the center of projection being located at the camera origin (and also because perspective projection works like that)
-    Camera camera(point3(3.271f, 0.700f, 2.614f), 3.0f);   // 0.012f, 0.700f, 3.043f
+    Camera camera(point3(0.012f, 0.700f, 3.043f), 3.0f);   // 0.012f, 0.700f, 3.043f
 
     // For cornellBoxOriginal -> 3.271f, 0.700f, 2.614f
     // For CornellBoxSphere   -> 0.012f, 0.700f, 3.043f
