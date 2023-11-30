@@ -1,3 +1,5 @@
+# code adapted from https://blender.stackexchange.com/a/251578
+
 def rescale_obj(obj_path, obj_scaled_path, scale):
     with open(obj_path, 'r') as source:
         with open(obj_scaled_path, 'w') as target:

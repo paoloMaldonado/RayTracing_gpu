@@ -1,3 +1,6 @@
+# source code from https://github.com/mariliafernandez/generate-obj-normals
+# author: Marília Machado Fernandez
+
 import re
 import numpy as np
 import argparse
